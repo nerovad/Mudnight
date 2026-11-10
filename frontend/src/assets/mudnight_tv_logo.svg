@@ -6,15 +6,16 @@
     <clipPath id="moon-clip">
       <use href="#crescent"/>
     </clipPath>
+    <!-- Geometric monoline caps: flat terminals, true-circle bowls -->
     <g id="word">
-      <path d="M 296 160 V 70 L 326 125 L 356 70 V 160"/>
-      <path d="M 394 70 V 134 A 26 26 0 0 0 446 134 V 70"/>
-      <path d="M 484 70 V 160 H 494 A 42 45 0 0 0 494 70 Z"/>
-      <path d="M 574 160 V 70 L 626 160 V 70"/>
-      <path d="M 664 70 V 160"/>
-      <path d="M 746 80 A 27 45 0 1 0 754 130 V 118 H 732"/>
-      <path d="M 794 70 V 160 M 846 70 V 160 M 794 115 H 846"/>
-      <path d="M 884 70 H 940 M 912 70 V 160"/>
+      <path d="M 296 160 V 70 L 323 128 L 350 70 V 160"/>
+      <path d="M 384 70 V 133 A 27 27 0 0 0 438 133 V 70"/>
+      <path d="M 472 70 V 160 H 478 A 45 45 0 0 0 478 70 Z"/>
+      <path d="M 557 160 V 70 L 607 160 V 70"/>
+      <path d="M 641 70 V 160"/>
+      <path d="M 751.8 83.2 A 45 45 0 1 0 765 115 H 726"/>
+      <path d="M 799 70 V 160 M 851 70 V 160 M 799 115 H 851"/>
+      <path d="M 881 70 H 937 M 909 70 V 160"/>
     </g>
   </defs>
 
@@ -39,8 +40,10 @@
   <!-- MUDNIGHT with the same hard arcade offset shadow as the old wordmark,
        nudged down 20 to sit a touch lower against the moon -->
   <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <use href="#word" stroke="#ff7b00" stroke-width="22" transform="translate(5,26)"/>
-    <use href="#word" stroke="#a259ff" stroke-width="22" transform="translate(0,20)"/>
+    <g stroke-linecap="butt">
+      <use href="#word" stroke="#ff7b00" stroke-width="15" transform="translate(4,25)"/>
+      <use href="#word" stroke="#a259ff" stroke-width="15" transform="translate(0,20)"/>
+    </g>
 
     <!-- TV tag, tilted up off the end of the word with the colours swapped -->
     <g transform="translate(998,100) rotate(-12)">
