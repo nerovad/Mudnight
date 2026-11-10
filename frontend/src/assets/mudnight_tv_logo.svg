@@ -36,13 +36,14 @@
     <ellipse cx="112" cy="292" rx="6" ry="7"/>
   </g>
 
-  <!-- MUDNIGHT with the same hard arcade offset shadow as the old wordmark -->
+  <!-- MUDNIGHT with the same hard arcade offset shadow as the old wordmark,
+       nudged down 20 to sit a touch lower against the moon -->
   <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <use href="#word" stroke="#ff7b00" stroke-width="22" transform="translate(5,6)"/>
-    <use href="#word" stroke="#a259ff" stroke-width="22"/>
+    <use href="#word" stroke="#ff7b00" stroke-width="22" transform="translate(5,26)"/>
+    <use href="#word" stroke="#a259ff" stroke-width="22" transform="translate(0,20)"/>
 
     <!-- TV tag, tilted up off the end of the word with the colours swapped -->
-    <g transform="translate(998,80) rotate(-12)">
+    <g transform="translate(998,100) rotate(-12)">
       <path d="M 0 0 H 50 M 25 0 V 100 M 74 0 L 98 100 L 122 0"
             stroke="#a259ff" stroke-width="24" transform="translate(5,6)"/>
       <path d="M 0 0 H 50 M 25 0 V 100 M 74 0 L 98 100 L 122 0"
