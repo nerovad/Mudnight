@@ -1,0 +1,22 @@
+# Connection settings come from the monorepo .env (DB_USER, DB_HOST, ...),
+# the same variables the Express backend read.
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 }.to_i + 5 %>
+  host: <%= ENV.fetch("DB_HOST", "localhost") %>
+  port: <%= ENV.fetch("DB_PORT", 5432) %>
+  username: <%= ENV["DB_USER"] %>
+  password: <%= ENV["DB_PASSWORD"] %>
+
+development:
+  <<: *default
+  database: <%= ENV.fetch("DB_NAME", "cinezoo_development") %>
+
+test:
+  <<: *default
+  database: cinezoo_test
+
+production:
+  <<: *default
+  database: <%= ENV.fetch("DB_NAME", "cinezoo") %>

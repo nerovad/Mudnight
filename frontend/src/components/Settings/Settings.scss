@@ -1,0 +1,47 @@
+.settings-page {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  background: #222;
+  color: #fff;
+  border-radius: 10px;
+
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .settings-section {
+    margin-bottom: 15px;
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      background: #333;
+      color: #fff;
+    }
+  }
+
+  .save-btn {
+    width: 100%;
+    padding: 10px;
+    background: #008cba;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+
+    &:hover {
+      background: #00aaff;
+    }
+  }
+}
+

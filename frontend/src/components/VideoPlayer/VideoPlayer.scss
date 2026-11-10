@@ -1,0 +1,192 @@
+@use "../../styles/_variables.scss" as *;
+
+.video-container-dboriginals {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  top: 50px;
+  height: calc(100vh - 50px - var(--ticker-height, 50px));
+  overflow: hidden;
+  position: relative;
+  background-color: $background-color-primary;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.tv-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  overflow: hidden;
+  // Makes cqw/cqh below resolve against this box. Its own size is already
+  // fixed by the parent, so opting out of content-based sizing costs nothing.
+  container-type: size;
+
+  &:fullscreen {
+    width: 100vw;
+    height: 100vh;
+  }
+}
+
+// The picture, sized to the media's own aspect and centred. Whichever axis is
+// spare becomes letterbox — filled by .video-ambient, never by dead black.
+// cqw/cqh are used instead of `aspect-ratio` because a ratio box clamped by
+// max-width/max-height loses its ratio on the clamped axis; this is exact.
+.video-stage {
+  position: relative;
+  z-index: 2;
+  width: min(100cqw, 100cqh * var(--media-aspect, 1.7778));
+  height: min(100cqh, 100cqw / var(--media-aspect, 1.7778));
+  // Clicks fall through to .db-originals-next-button underneath, so tapping
+  // the picture still changes channel. Interactive children opt back in.
+  pointer-events: none;
+}
+
+// Blurred, over-scaled copy of the current frame, painted from a 32x18 canvas.
+.video-ambient {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  // Over-scaled so the blur's soft edge never exposes the box behind it.
+  transform: scale(1.2);
+  filter: blur(48px) saturate(1.6) brightness(0.5);
+  pointer-events: none;
+}
+
+.myvideo {
+  width: 100%;
+  height: 100%;
+  // The stage already matches the source aspect; contain keeps a stale or
+  // still-unmeasured aspect from cropping rather than just mis-sizing.
+  object-fit: contain;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.db-originals-next-button {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  background: transparent;
+  cursor: pointer;
+}
+
+.channelnumber {
+  font-family: $primary-font-family;
+  font-size: 80px;
+  color: $channel-text-color;
+  position: absolute;
+  top: 1px;
+  left: 36px;
+  z-index: 3;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+// Same glyph and treatment as the navbar mute button (.mute-button), which is
+// scoped under .search-navbar and so can't be shared directly.
+.mute-icon-overlay {
+  position: absolute;
+  top: 42%;
+  right: 45%;
+  width: 140px;
+  height: auto;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #af63ff;
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  // .video-stage disables pointer events wholesale; this control needs them.
+  pointer-events: auto;
+  transition: opacity 0.3s ease-in-out, transform 0.2s ease-in-out,
+    filter 0.2s ease-in-out;
+
+  svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  &:hover {
+    opacity: 1;
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 6px #af63ff) drop-shadow(0 0 12px rgba(#af63ff, 0.3));
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.intermission-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $background-color-primary;
+  z-index: 1;
+}
+
+.intermission-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Mobile styles - remove margins since sidebars overlay */
+.video-container-dboriginals.mobile {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100% !important;
+}
+
+@media (max-width: 768px) {
+  .video-container-dboriginals {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+  }
+
+  .channelnumber {
+    font-size: 40px;
+    left: 16px;
+  }
+
+  .mute-icon-overlay {
+    width: 80px;
+  }
+}
+
+/* Portrait. The stage handles the fit; no object-fit override needed. */
+@media (max-width: 768px) and (orientation: portrait) {
+  .video-container-dboriginals {
+    top: 0;
+    height: 100%;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .mute-icon-overlay {
+    width: 50px;
+  }
+}

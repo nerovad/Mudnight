@@ -1,0 +1,379 @@
+@use "sass:color";
+@use "../../styles/_variables.scss" as *;
+
+.event-modal-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10001;
+  font-family: $primary-font-family;
+  color: $primary-color;
+}
+
+.event-modal-content {
+  width: min(750px, 94vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: linear-gradient(
+    to bottom,
+    $background-color-primary,
+    color.adjust($background-color-primary, $lightness: -8%)
+  );
+  border: 2px solid $secondary-color;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  padding: 24px;
+  position: relative;
+
+  h2 {
+    margin: 0 0 0.25rem;
+    color: $secondary-color;
+    text-align: center;
+    font-size: 1.4rem;
+  }
+
+  .channel-name {
+    text-align: center;
+    color: $text-color-secondary;
+    margin: 0 0 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: 2px solid $border-color-primary;
+  color: $text-color-primary;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: $secondary-color;
+    color: $secondary-color;
+  }
+}
+
+.success-message {
+  text-align: center;
+  padding: 3rem 2rem;
+
+  .success-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: rgba($secondary-color, 0.2);
+    border: 3px solid $secondary-color;
+    border-radius: 50%;
+    font-size: 2.5rem;
+    color: $secondary-color;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1.25rem;
+    color: $secondary-color;
+    margin: 0;
+  }
+}
+
+.event-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  label {
+    display: block;
+    font-size: 0.95rem;
+    color: $text-color-primary;
+    margin-bottom: 0.35rem;
+    font-weight: 600;
+  }
+
+  input[type="text"],
+  input[type="url"],
+  input[type="datetime-local"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: $background-color-primary;
+    color: $channel-text-color;
+    border: 2px solid $border-color-primary;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: $primary-font-family;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+
+    &::placeholder {
+      color: $text-color-secondary;
+      opacity: 0.7;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $secondary-color;
+      box-shadow: 0 0 0 3px rgba($secondary-color, 0.1);
+    }
+
+    &:hover {
+      border-color: color.adjust($border-color-primary, $lightness: 10%);
+    }
+  }
+
+  .row {
+    &.cols-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+
+      > div {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
+}
+
+/* Event Type Selector */
+.event-type-selector {
+  margin-bottom: 0.5rem;
+
+  > label {
+    margin-bottom: 0.75rem;
+  }
+
+  .event-type-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+
+  .event-type-option {
+    cursor: pointer;
+
+    input[type="radio"] {
+      display: none;
+    }
+
+    .event-type-card {
+      padding: 1rem;
+      border: 2px solid $border-color-primary;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.3);
+      transition: all 0.2s ease;
+      height: 100%;
+
+      strong {
+        display: block;
+        color: $text-color-primary;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+      }
+
+      p {
+        font-size: 0.8rem;
+        color: $text-color-secondary;
+        margin: 0;
+        line-height: 1.4;
+      }
+    }
+
+    &:hover .event-type-card {
+      border-color: rgba($secondary-color, 0.5);
+      background: rgba($secondary-color, 0.05);
+    }
+
+    &.selected .event-type-card {
+      border-color: $secondary-color;
+      background: rgba($secondary-color, 0.15);
+      box-shadow: 0 0 0 1px $secondary-color;
+
+      strong {
+        color: $secondary-color;
+      }
+    }
+  }
+}
+
+/* Auto-applied widgets info */
+.auto-widgets-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba($secondary-color, 0.1);
+  border: 1px solid rgba($secondary-color, 0.3);
+  border-radius: 6px;
+
+  .label {
+    font-size: 0.85rem;
+    color: $text-color-secondary;
+  }
+
+  .widget-list {
+    font-size: 0.9rem;
+    color: $secondary-color;
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+}
+
+/* Films Section */
+.films-section {
+  .films-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+
+    h4 {
+      margin: 0;
+      font-size: 1.05rem;
+      color: $secondary-color;
+    }
+  }
+
+  .films-table {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .film-row {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 0.6fr 1.2fr auto;
+      gap: 0.5rem;
+      align-items: start;
+
+      input {
+        min-width: 0;
+      }
+
+      .icon-btn {
+        align-self: stretch;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+        padding: 0.4rem;
+        border-radius: 6px;
+        border: 2px solid $border-color-primary;
+        background: $background-color-primary;
+        color: $text-color-primary;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          border-color: #ff6b6b;
+          color: #ff6b6b;
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}
+
+/* Tournament Section */
+.tournament-section {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 2px solid $border-color-primary;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Buttons */
+.btn-secondary {
+  background: transparent;
+  color: $secondary-color;
+  border: 2px solid $secondary-color;
+  border-radius: 6px;
+  padding: 0.5rem 0.9rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+
+  &:hover {
+    background: rgba($secondary-color, 0.15);
+  }
+
+  &.small {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.8rem;
+    border-width: 1.5px;
+  }
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  background-color: $secondary-color;
+  color: $background-color-primary;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: $primary-font-family;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.5rem;
+
+  &:hover:not(:disabled) {
+    background-color: color.adjust($secondary-color, $lightness: 8%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba($secondary-color, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: $text-color-secondary;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .event-modal-content {
+    padding: 16px;
+  }
+
+  .event-type-selector .event-type-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .event-form .row.cols-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .films-section .films-table .film-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+
+    input:first-child {
+      grid-column: 1 / -1;
+    }
+  }
+}

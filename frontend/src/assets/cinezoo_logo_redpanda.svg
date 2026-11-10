@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 300">
+  <defs>
+    <path id="tail" d="M 246 236 C 330 292, 466 288, 602 282 C 730 277, 866 274, 930 240"/>
+    <g id="word">
+      <path d="M 384 123 A 30 52 0 1 0 384 197"/>
+      <path d="M 424 108 V 212"/>
+      <path d="M 464 212 V 108 L 526 212 V 108"/>
+      <path d="M 624 108 H 566 V 212 H 624 M 566 160 H 612"/>
+      <path d="M 664 108 H 728 L 664 212 H 728"/>
+      <ellipse cx="798" cy="160" rx="30" ry="52"/>
+      <ellipse cx="898" cy="160" rx="30" ry="52"/>
+    </g>
+  </defs>
+
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+
+    <!-- ringed tail -->
+    <use href="#tail" stroke="#ff7b00" stroke-width="28"/>
+    <use href="#tail" stroke="#3aff78" stroke-width="28" stroke-linecap="butt"
+         stroke-dasharray="20 50" stroke-dashoffset="-40"/>
+
+    <!-- head -->
+    <path d="M 156 246
+             C 198 246, 232 232, 250 208
+             C 262 192, 266 172, 263 152
+             C 261 140, 259 132, 257 126
+             C 288 114, 306 76, 284 50
+             C 262 24, 212 40, 198 72
+             C 185 66, 171 63, 156 63
+             C 141 63, 127 66, 114 72
+             C 100 40, 50 24, 28 50
+             C 6 76, 24 114, 55 126
+             C 53 132, 51 140, 49 152
+             C 46 172, 50 192, 62 208
+             C 80 232, 114 246, 156 246 Z"
+          stroke="#ff7b00" stroke-width="15"/>
+
+    <!-- fluffy inner ears -->
+    <ellipse cx="248" cy="84" rx="21" ry="27" transform="rotate(22 248 84)" stroke="#3aff78" stroke-width="11"/>
+    <ellipse cx="64" cy="84" rx="21" ry="27" transform="rotate(-22 64 84)" stroke="#3aff78" stroke-width="11"/>
+
+
+    <!-- white muzzle patch -->
+    <path d="M 156 184 C 180 184, 198 197, 198 212 C 198 230, 178 241, 156 241
+             C 134 241, 114 230, 114 212 C 114 197, 132 184, 156 184 Z"
+          stroke="#3aff78" stroke-width="11"/>
+
+    <!-- brow spots -->
+    <path d="M 98 138 C 108 125, 132 125, 140 138" stroke="#3aff78" stroke-width="11"/>
+    <path d="M 172 138 C 180 125, 204 125, 214 138" stroke="#3aff78" stroke-width="11"/>
+
+    <!-- eyes -->
+    <circle cx="120" cy="165" r="12" fill="#3aff78" stroke="none"/>
+    <circle cx="192" cy="165" r="12" fill="#3aff78" stroke="none"/>
+
+    <!-- nose. The mouth is deliberately omitted: at the 140px the nav renders
+         this at, a mouth stroke collapses into the muzzle patch and muddies it. -->
+    <path d="M 142 199 C 142 191, 170 191, 170 199 C 170 210, 156 219, 156 219
+             C 156 219, 142 210, 142 199 Z"
+          fill="#ff7b00" stroke="#ff7b00" stroke-width="7"/>
+
+    <!-- CINEZOO with hard arcade offset shadow. Offset stays small so the two
+         colours read as one solid letter at nav size rather than a fringe. -->
+    <use href="#word" stroke="#ff7b00" stroke-width="26" transform="translate(6,7)"/>
+    <use href="#word" stroke="#a259ff" stroke-width="26"/>
+  </g>
+</svg>

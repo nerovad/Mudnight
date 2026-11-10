@@ -1,0 +1,845 @@
+@use "../../styles/_variables.scss" as *;
+@use "../../styles/_spacecadet.scss" as *;
+
+.search-navbar {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1.5rem;
+  height: 50px;
+  width: 100%;
+  // Same panel black as the news ticker, so the bar at the top of the
+  // screen and the readout at the bottom frame the video as one unit.
+  background-color: $sc-panel-black;
+  z-index: 100000;
+  font-family: $primary-font-family;
+
+  // Left Section (Logo + channel/guide controls)
+  &__left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+
+    .search-navbar__logo {
+      height: auto;
+      width: 140px;
+      margin-top: 7px;
+      margin-left: 7px;
+      transition: transform 0.2s ease-in-out;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  // Center Section (Search bar only) — sized to its content so the equal
+  // flex:1 side sections keep it centered in the bar.
+  &__center {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  // Control row — bare controls, no enclosing chrome
+  .control-pill {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+
+    &__group {
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+
+      // Up/down arrows read as one paired control, so keep them tighter than
+      // the rest — but still loosened alongside everything else.
+      &--channel {
+        gap: 1.1rem;
+      }
+    }
+  }
+
+  // Control clusters flanking the search bar. The auto margins split their
+  // section's leftover space evenly, parking each cluster midway between the
+  // search bar and the logo / profile button rather than packing to an edge.
+  &__controls {
+    flex-shrink: 0;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  // Channel Input Box
+  &__channel-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: rgba($background-color-primary, 0.6);
+    border-radius: 999px;
+    border: 2.5px solid rgba($primary-color, 0.55);
+    transition: border-color 0.3s ease-in-out, border-width 0.3s ease-in-out,
+      box-shadow 0.3s ease-in-out;
+    padding: 0.2rem 0.4rem;
+    height: 30px;
+    // Explicit width so the box doesn't just track the input's intrinsic size,
+    // which sat around 205px.
+    width: 380px;
+    max-width: 100%;
+    min-width: 280px;
+    justify-content: space-between;
+
+    &:focus-within {
+      border-width: 3.5px;
+      border-color: $primary-color;
+      box-shadow: 0 0 14px rgba($primary-color, 0.6);
+    }
+
+    input {
+      background: transparent;
+      border: none;
+      color: $accent-secondary-color;
+      font-size: 0.85rem;
+      outline: none;
+      text-align: left;
+      flex: 1;
+      padding-left: 0.5rem;
+      font-family: $primary-font-family;
+      font-weight: 700;
+
+      &::placeholder {
+        color: rgba($accent-secondary-color, 0.7);
+        font-size: 0.8rem;
+      }
+    }
+
+    .channel-go-button {
+      background-color: transparent;
+      color: $primary-color;
+      border: none;
+      padding: 4px 6px;
+      cursor: pointer;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      transition: transform 0.2s ease-in-out, text-shadow 0.2s ease-in-out;
+      text-shadow: 0 0 2px $primary-color;
+
+      &:hover {
+        transform: scale(1.15);
+        text-shadow: 0 0 10px $primary-color, 0 0 16px $primary-color;
+      }
+    }
+
+    // Search Dropdown
+    .search-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: rgba($background-color-primary, 0.97);
+      backdrop-filter: blur(12px);
+      border: 1.5px solid rgba($primary-color, 0.4);
+      border-radius: 12px;
+      max-height: 250px;
+      overflow-y: auto;
+      z-index: 10001;
+      box-shadow:
+        0 0 16px rgba($primary-color, 0.15),
+        0 8px 24px rgba(0, 0, 0, 0.5);
+      animation: dropdown-slide-in 0.2s ease-out;
+
+      &__item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 0.75rem;
+        cursor: pointer;
+        transition: background 0.15s ease, padding-left 0.15s ease;
+        border-bottom: 1px solid rgba($border-color-primary, 0.3);
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:hover,
+        &--selected {
+          background: rgba($primary-color, 0.15);
+          padding-left: 1rem;
+        }
+      }
+
+      &__channel-number {
+        font-weight: 700;
+        color: $primary-color;
+        font-size: 0.9rem;
+        min-width: 28px;
+        text-shadow: 0 0 4px $primary-color;
+      }
+
+      &__channel-name {
+        flex: 1;
+        color: $text-color-primary;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      &__tag {
+        font-size: 0.75rem;
+        color: $secondary-color;
+        background: rgba($secondary-color, 0.15);
+        padding: 0.15rem 0.4rem;
+        border-radius: 10px;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  // Channel Change Buttons
+  .channel-button {
+    background-color: transparent;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease-in-out, filter 0.2s ease-in-out, background 0.2s ease;
+
+    &:hover {
+      transform: scale(1.2);
+      background: rgba(#af63ff, 0.1);
+      filter: drop-shadow(0 0 6px #af63ff) drop-shadow(0 0 12px rgba(#af63ff, 0.3));
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    img {
+      height: 28px;
+      width: 28px;
+      display: block;
+    }
+  }
+
+  // Mute, Shuffle, and Fullscreen Buttons
+  .mute-button,
+  .shuffle-button,
+  .fullscreen-button {
+    background-color: transparent;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease-in-out, filter 0.2s ease-in-out, background 0.2s ease;
+
+    &:hover {
+      transform: scale(1.2);
+      background: rgba(#af63ff, 0.1);
+      filter: drop-shadow(0 0 6px #af63ff) drop-shadow(0 0 12px rgba(#af63ff, 0.3));
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    img {
+      height: 28px;
+      width: 28px;
+      display: block;
+    }
+  }
+
+  // Volume slider group — expands on hover
+  .control-pill__group--volume {
+    transition: gap 0.3s ease;
+
+    .volume-slider-container {
+      overflow: hidden;
+      width: 0;
+      opacity: 0;
+      transition: width 0.3s ease, opacity 0.3s ease;
+      display: flex;
+      align-items: center;
+    }
+
+    &.control-pill__group--volume-open .volume-slider-container {
+      width: 80px;
+      opacity: 1;
+    }
+
+    .volume-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 80px;
+      height: 4px;
+      border-radius: 2px;
+      background: linear-gradient(
+        to right,
+        $primary-color 0%,
+        $primary-color calc(var(--volume-pct, 100) * 1%),
+        rgba($primary-color, 0.2) calc(var(--volume-pct, 100) * 1%),
+        rgba($primary-color, 0.2) 100%
+      );
+      outline: none;
+      cursor: pointer;
+
+      &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: $primary-color;
+        box-shadow: 0 0 6px rgba($primary-color, 0.6);
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+        &:hover {
+          transform: scale(1.3);
+          box-shadow: 0 0 10px rgba($primary-color, 0.8);
+        }
+      }
+
+      &::-moz-range-thumb {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: $primary-color;
+        box-shadow: 0 0 6px rgba($primary-color, 0.6);
+        border: none;
+        cursor: pointer;
+      }
+
+      &::-moz-range-track {
+        height: 4px;
+        border-radius: 2px;
+        background: rgba($primary-color, 0.2);
+      }
+    }
+  }
+
+  &__tv-guide-button {
+    background-color: transparent;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease-in-out, filter 0.2s ease-in-out, background 0.2s ease;
+
+    &:hover {
+      transform: scale(1.2);
+      background: rgba(#af63ff, 0.1);
+      filter: drop-shadow(0 0 6px #af63ff) drop-shadow(0 0 12px rgba(#af63ff, 0.3));
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    img {
+      height: 28px;
+      width: auto;
+      display: block;
+    }
+  }
+  // Right Section (Links and Profile/Login)
+  &__links {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    // No gap: the controls' auto margins own the spacing so both sides of the
+    // cluster stay equal. A gap here would bias it toward the search bar.
+    gap: 0;
+    position: relative;
+  }
+
+  &__link img {
+    width: 1.5rem;
+    height: 1.4rem;
+    transition: transform 0.2s;
+    margin-top: 7px;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  &__profile {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 4px 10px 4px 6px;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: rgba($primary-color, 0.15);
+    }
+  }
+
+  &__profile-icon {
+    cursor: pointer;
+    transition: transform 0.2s;
+    color: $primary-color;
+    flex-shrink: 0;
+  }
+
+  &__username {
+    font-size: 1rem;
+    font-weight: 700;
+    color: $text-color-primary;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // Login Button (Only visible when not logged in)
+  &__login-button {
+    background-color: $primary-color;
+    border: none;
+    cursor: pointer;
+    color: $channel-text-color;
+    padding: 6px 8px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background 0.3s ease-in-out;
+    font-size: 0.875rem;
+    font-family: $primary-font-family;
+    font-weight: 700;
+    transition: transform 0.12s ease-in-out, filter 0.12s ease-in-out;
+
+    &:hover {
+      transform: scale(1.1);
+      filter: drop-shadow(0 0 8px $primary-color) brightness(1.2);
+    }
+  }
+
+  // Profile Dropdown (Only visible when logged in)
+  .profile-dropdown {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    background: rgba($background-color-primary, 0.97);
+    backdrop-filter: blur(12px);
+    border: 2px solid $primary-color;
+    border-radius: 8px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-width: 160px;
+    z-index: 1000000;
+    box-shadow:
+      0 0 20px rgba($primary-color, 0.4),
+      0 8px 32px rgba(0, 0, 0, 0.6),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    font-family: $primary-font-family;
+    overflow: hidden;
+    animation: dropdown-slide-in 0.2s ease-out;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, $primary-color, transparent);
+      opacity: 0.6;
+    }
+
+    &__item {
+      padding: 12px 16px;
+      color: $text-color-primary;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: block;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba($primary-color, 0.2);
+      position: relative;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: $primary-color;
+        transform: scaleY(0);
+        transition: transform 0.2s ease;
+      }
+
+      &:hover {
+        background: rgba($primary-color, 0.15);
+        color: $channel-text-color;
+        text-shadow: 0 0 8px rgba($primary-color, 0.5);
+        padding-left: 20px;
+
+        &::before {
+          transform: scaleY(1);
+        }
+      }
+    }
+
+    &__logout {
+      background: transparent;
+      color: $primary-color;
+      border: none;
+      padding: 12px 16px;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      font-size: 0.85rem;
+      font-family: $primary-font-family;
+      transition: all 0.2s ease;
+      position: relative;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: $accent-secondary-color;
+        transform: scaleY(0);
+        transition: transform 0.2s ease;
+      }
+
+      &:hover {
+        background: rgba($accent-secondary-color, 0.15);
+        color: $accent-secondary-color;
+        text-shadow: 0 0 8px rgba($accent-secondary-color, 0.5);
+        padding-left: 20px;
+
+        &::before {
+          transform: scaleY(1);
+        }
+      }
+    }
+  }
+
+  @keyframes dropdown-slide-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  // Create Channel button (sits next to TV Guide)
+&__create-channel-button {
+  background-color: transparent;
+  border: 2px solid $border-color-primary;
+  color: $text-color-secondary;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-family: $primary-font-family;
+  text-transform: uppercase;
+  margin-top: 3px;
+  transition: background 0.3s ease-in-out, border-color 0.3s ease-in-out;
+
+  &:hover {
+    background-color: $primary-color;
+    border-color: $primary-color;
+    color: $channel-text-color;
+  }
+  &:active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+}
+
+}
+@keyframes arcade-flicker {
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 0px $primary-color); }
+  10% { opacity: 0.8; filter: drop-shadow(0 0 4px $primary-color); }
+  20% { opacity: 1; filter: drop-shadow(0 0 0px $primary-color); }
+  30% { opacity: 0.9; filter: drop-shadow(0 0 6px $primary-color); }
+  50% { opacity: 0.7; filter: drop-shadow(0 0 10px $primary-color); }
+  60%, 80% { opacity: 1; filter: drop-shadow(0 0 4px $primary-color); }
+  90% { opacity: 0.85; filter: drop-shadow(0 0 8px $primary-color); }
+}
+
+.search-navbar__logo {
+  animation: arcade-flicker 5s infinite;
+}
+
+/* ===== MOBILE STYLES ===== */
+@media (max-width: 768px) {
+  .search-navbar {
+    padding: 0.3rem 0.5rem;
+    gap: 0.25rem;
+
+    &__hamburger {
+      background: transparent;
+      border: none;
+      padding: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.12s ease-in-out, filter 0.12s ease-in-out;
+      flex-shrink: 0;
+
+      &:hover {
+        transform: scale(1.2);
+        filter: drop-shadow(0 0 8px $primary-color) brightness(1.2);
+      }
+
+      img {
+        width: 20px;
+        height: 20px;
+        transition: transform 0.3s ease-in-out;
+        transform: rotate(180deg);
+      }
+
+      &.open img {
+        transform: rotate(0deg);
+      }
+    }
+
+    &__left {
+      display: none; // Hide logo on mobile
+    }
+
+    &__center {
+      flex: 1;
+      justify-content: center;
+    }
+
+    .control-pill {
+      gap: 1.5rem;
+
+      &__group {
+        gap: 1.5rem;
+
+        &--channel {
+          gap: 0.6rem;
+        }
+      }
+    }
+
+    .channel-button {
+      padding: 4px;
+
+      img {
+        height: 18px;
+        width: 18px;
+      }
+    }
+
+    &__channel-input-container {
+      min-width: 70px;
+      flex: 1;
+      max-width: 120px;
+      height: 26px;
+      padding: 0.15rem 0.3rem;
+
+      input {
+        font-size: 0.75rem;
+        padding-left: 0.3rem;
+
+        &::placeholder {
+          font-size: 0.65rem;
+        }
+      }
+
+      .channel-go-button {
+        display: none;
+      }
+
+      .search-dropdown {
+        &__item {
+          padding: 0.5rem 0.6rem;
+        }
+
+        &__channel-number {
+          font-size: 0.8rem;
+          min-width: 24px;
+        }
+
+        &__channel-name {
+          font-size: 0.8rem;
+        }
+
+        &__tag {
+          font-size: 0.7rem;
+        }
+      }
+    }
+
+    .shuffle-button,
+    .fullscreen-button {
+      padding: 4px;
+
+      img {
+        height: 18px;
+        width: auto;
+      }
+
+      svg {
+        height: 16px;
+        width: 16px;
+      }
+    }
+
+
+    &__links {
+      flex: 0 0 auto;
+      gap: 0.6rem;
+    }
+
+    &__login-button {
+      padding: 4px 8px;
+      font-size: 0.75rem;
+    }
+
+    &__profile {
+      padding: 2px 4px;
+    }
+  }
+}
+
+/* Menu toggle arrow - hidden on desktop, shown on mobile */
+.search-navbar__hamburger {
+  display: none;
+}
+
+.search-navbar--mobile .search-navbar__hamburger {
+  display: flex;
+}
+
+/* ===== HAMBURGER MENU (mobile portrait) ===== */
+.hamburger-menu {
+  position: relative;
+  flex-shrink: 0;
+  z-index: 10002;
+}
+
+.hamburger-button {
+  background: transparent;
+  border: none;
+  padding: 8px 6px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  .hamburger-line {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: $primary-color;
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  /* Animate to X when open */
+  &.open {
+    .hamburger-line:nth-child(1) {
+      transform: translateY(6px) rotate(45deg);
+    }
+    .hamburger-line:nth-child(2) {
+      opacity: 0;
+    }
+    .hamburger-line:nth-child(3) {
+      transform: translateY(-6px) rotate(-45deg);
+    }
+  }
+}
+
+.hamburger-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  background: rgba($background-color-primary, 0.97);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid rgba($primary-color, 0.4);
+  border-radius: 10px;
+  min-width: 150px;
+  overflow: hidden;
+  z-index: 10003;
+  box-shadow:
+    0 0 16px rgba($primary-color, 0.15),
+    0 8px 24px rgba(0, 0, 0, 0.5);
+  animation: dropdown-slide-in 0.2s ease-out;
+
+  &__item {
+    display: block;
+    width: 100%;
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba($primary-color, 0.15);
+    color: $text-color-primary;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: $primary-font-family;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: $primary-color;
+      transform: scaleY(0);
+      transition: transform 0.2s ease;
+    }
+
+    &:hover {
+      background: rgba($primary-color, 0.1);
+      padding-left: 20px;
+
+      &::before {
+        transform: scaleY(1);
+      }
+    }
+
+    &.active {
+      color: $primary-color;
+      background: rgba($primary-color, 0.08);
+      text-shadow: 0 0 8px rgba($primary-color, 0.3);
+
+      &::before {
+        transform: scaleY(1);
+      }
+    }
+  }
+}

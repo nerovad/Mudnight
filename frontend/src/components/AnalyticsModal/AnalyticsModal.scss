@@ -1,0 +1,219 @@
+@use "sass:color";
+@use "../../styles/_variables.scss" as *;
+
+.analytics-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10001;
+  font-family: $primary-font-family;
+  color: $text-color-primary;
+}
+
+.analytics-content {
+  width: min(750px, 92vw);
+  max-height: 92vh;
+  overflow-y: auto;
+  background: linear-gradient(
+    to bottom,
+    $background-color-primary,
+    color.adjust($background-color-primary, $lightness: -10%)
+  );
+  border: 2px solid $border-color-primary;
+  border-radius: 10px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  padding: 24px;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      rgba($primary-color, 0.03) 0px,
+      rgba($accent-secondary-color, 0.02) 3px
+    );
+    pointer-events: none;
+    border-radius: 10px;
+  }
+}
+
+.analytics-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: $background-color-primary;
+  border: none;
+  color: $channel-text-color;
+  padding: 8px 12px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+
+  &:hover {
+    background: $secondary-color;
+  }
+}
+
+.analytics-title {
+  margin: 0 0 4px;
+  color: $secondary-color;
+  text-align: center;
+  font-size: 1.4rem;
+}
+
+.analytics-channel-num {
+  color: $primary-color;
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+.analytics-owner {
+  text-align: center;
+  color: $text-color-secondary;
+  font-size: 0.8rem;
+  margin-bottom: 2px;
+}
+
+.analytics-created {
+  text-align: center;
+  color: $text-color-secondary;
+  font-size: 0.75rem;
+  margin-bottom: 20px;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.analytics-card {
+  background: rgba($background-color-secondary, 0.5);
+  border: 1px solid rgba($primary-color, 0.2);
+  border-radius: 8px;
+  padding: 14px 10px;
+  text-align: center;
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: rgba($primary-color, 0.5);
+  }
+
+  &__value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $channel-text-color;
+    line-height: 1.2;
+  }
+
+  &__label {
+    font-size: 0.7rem;
+    color: $text-color-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+}
+
+.analytics-sessions {
+  h3 {
+    color: $primary-color;
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+
+    th {
+      text-align: left;
+      padding: 8px 10px;
+      color: $text-color-secondary;
+      border-bottom: 1px solid rgba($primary-color, 0.3);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 8px 10px;
+      border-bottom: 1px solid rgba($border-color-primary, 0.5);
+    }
+
+    tr:hover {
+      background: rgba($primary-color, 0.05);
+    }
+  }
+}
+
+.analytics-status {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+
+  &--live {
+    background: rgba($secondary-color, 0.15);
+    color: $secondary-color;
+  }
+
+  &--closed {
+    background: rgba($text-color-secondary, 0.15);
+    color: $text-color-secondary;
+  }
+
+  &--scheduled {
+    background: rgba($primary-color, 0.15);
+    color: $primary-color;
+  }
+}
+
+.analytics-loading {
+  text-align: center;
+  color: $text-color-secondary;
+  padding: 3rem 1rem;
+}
+
+.analytics-error {
+  text-align: center;
+  color: #ff6b6b;
+  padding: 2rem 1rem;
+}
+
+@media (max-width: 768px) {
+  .analytics-content {
+    padding: 16px;
+  }
+
+  .analytics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .analytics-card {
+    padding: 10px 8px;
+
+    &__value {
+      font-size: 1.2rem;
+    }
+  }
+
+  .analytics-sessions__table {
+    font-size: 0.75rem;
+  }
+}

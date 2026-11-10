@@ -1,0 +1,10 @@
+{
+  "name": "cinezoo",
+  "private": true,
+  "workspaces": ["shared", "frontend", "mobile"],
+  "scripts": {
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "dev:backend": "cd backend && bin/rails server",
+    "dev:mobile": "npm run start --workspace=mobile"
+  }
+}

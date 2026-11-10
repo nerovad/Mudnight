@@ -1,0 +1,940 @@
+@use "sass:color";
+@use "../../styles/_variables.scss" as *;
+@use "../../styles/_spacecadet.scss" as *;
+
+// Lava lamp wax shades derived from $primary-color: #a259ff
+// These are opaque on purpose — the goo filter needs solid alpha to merge
+// blobs, so translucency is applied once on the .lava-goo layer instead.
+$lava-core: color.adjust($primary-color, $lightness: 20%);                       // hot highlight
+$lava-body: $primary-color;                                                      // wax body
+$lava-shade: color.adjust($primary-color, $lightness: -24%, $saturation: -10%);  // cooled underside
+
+/* ===== YOUR ORIGINAL SIDEBAR STYLES (unchanged) ===== */
+.utilities-container {
+  position: fixed;
+  font-family: $primary-font-family;
+  top: 50px;
+  left: 0;
+  height: calc(100vh - 50px - var(--ticker-height, 50px));
+  // Panel black, shared with the nav bar and news ticker.
+  background-color: $sc-panel-black;
+  transition: width 0.3s ease-in-out, height 0.3s ease-in-out, transform 0.3s ease-in-out;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  z-index: 1000;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+  min-width: 0;
+
+  &.open {
+    width: $sidebar-width;
+  }
+
+  &:not(.open) {
+    width: 0;
+    overflow-y: hidden;
+  }
+
+  /* Mobile drawer styles */
+  &.mobile {
+    width: 0;
+    min-width: 0;
+    transform: translateX(-100%);
+    box-shadow: none;
+
+    &.open {
+      width: 80vw;
+      max-width: 300px;
+      transform: translateX(0);
+      overflow-y: auto;
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  /* Mobile portrait inline mode — fills panel below video */
+  &.mobile-inline {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 100% !important;
+    height: 100% !important;
+    transform: none !important;
+    box-shadow: none;
+    z-index: auto;
+    overflow-y: auto;
+
+    .utilities-menu h3 {
+      margin-top: 0.5rem;
+    }
+  }
+}
+
+/* Hide menu arrow in mobile portrait */
+@media (max-width: 768px) and (orientation: portrait) {
+  .toggle-button-left {
+    display: none !important;
+  }
+}
+
+.toggle-button-left {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 10001;
+  padding: 8px;
+  transition: transform 0.12s ease-in-out, filter 0.12s ease-in-out, left 0.3s ease-in-out;
+
+  &:hover {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 8px $primary-color) brightness(1.2);
+  }
+
+  img {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease-in-out;
+    transform: rotate(180deg);
+  }
+
+  &.open {
+    left: $sidebar-width - $sidebar-toggle-inset;
+
+    img {
+      transform: rotate(0deg);
+    }
+  }
+}
+
+/* 🔒 Guard against any global button styles elsewhere */
+.toggle-button-left {
+  width: auto;
+  height: auto;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  max-width: none;
+  max-height: none;
+}
+
+/* Mobile close button */
+.mobile-close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  font-size: 1.8rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.2s ease;
+  z-index: 10;
+  line-height: 1;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+  }
+}
+
+/* Keep your existing menu styles */
+.utilities-menu {
+  font-family: inherit;
+  padding: 0rem 1rem;
+  background-color: transparent; // Changed from solid to transparent so lavalamp shows through
+  color: white;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  position: relative;
+  z-index: 2; // Above lava lamp (z-index: 0)
+
+  &.open {
+    display: flex;
+    flex-direction: column;
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  h3 {
+    font-family: inherit;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    margin-top: 2rem;
+    text-align: center;
+    // Wax passing behind must never fight the lettering
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+  }
+
+  ul {
+    list-style-type: none;
+    font-family: inherit;
+    padding: 0;
+  }
+
+  li {
+    font-size: 0.95rem;
+    font-family: inherit;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border-radius: 5px;
+    // Near-opaque so the wax reads as sitting behind the button, not sliding
+    // across its face. The 1px rim keeps the old glassy edge.
+    background: rgba($background-color-primary, 0.86);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(6px);
+    transition: background 0.2s ease-in-out, transform 0.2s ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+      background: $secondary-color;
+      transform: scale(1.05);
+
+      p {
+        color: #000;
+        font-weight: 600;
+      }
+    }
+
+    strong {
+      font-size: 1.1rem;
+      color: $primary-color;
+    }
+
+    p {
+      font-size: 0.85rem;
+      color: #ddd;
+      margin-top: 2px;
+      transition: color 0.2s ease-in-out, font-weight 0.2s ease-in-out;
+    }
+  }
+}
+
+/* ===== LAVA LAMP BACKGROUND ===== */
+.lava-lamp-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none; // Clicks pass through
+  // Bottom-most layer of the sidebar. It cannot go negative — the container's
+  // own background is opaque and would swallow it — so 0 is "last", and every
+  // content layer above sets an explicit positive z-index.
+  z-index: 0;
+  isolation: isolate; // Filters/will-change inside can't escape this layer
+  opacity: 0; // Hidden when collapsed
+  transition: opacity 0.5s ease-in-out;
+
+  // Show when sidebar is open
+  .utilities-container.open & {
+    opacity: 1;
+  }
+}
+
+// The SVG <filter> lives in the DOM but must never take up space
+.lava-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+// Warm backlight from the "bulb" under the wax pool
+.lava-glow {
+  position: absolute;
+  left: 50%;
+  bottom: -20%;
+  width: 200%;
+  height: 60%;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse at 50% 100%,
+    rgba($lava-core, 0.5) 0%,
+    rgba($lava-body, 0.2) 38%,
+    transparent 72%
+  );
+  filter: blur(20px);
+  animation: lava-bulb 8s ease-in-out infinite;
+}
+
+// Metaball layer: opaque children + goo filter = blobs that merge and
+// pinch apart with surface tension. Translucency is applied here, once,
+// after the filter has run.
+.lava-goo {
+  position: absolute;
+  inset: 0;
+  filter: url(#lava-goo) blur(2px);
+  opacity: 0.42;
+}
+
+// Molten wax reservoir sitting on the bulb — blobs pinch off from and
+// melt back into this
+.lava-pool {
+  position: absolute;
+  left: -14%;
+  bottom: -16%;
+  width: 128%;
+  height: 30%;
+  border-radius: 50% 50% 0 0 / 46% 46% 0 0;
+  background: linear-gradient(to top, $lava-shade 0%, $lava-body 62%, $lava-core 100%);
+  transform-origin: 50% 100%;
+  animation: lava-pool-swell 9s ease-in-out infinite;
+}
+
+// Cooled wax collecting against the ceiling — risen blobs merge into it
+.lava-cap {
+  position: absolute;
+  left: -14%;
+  top: -20%;
+  width: 128%;
+  height: 22%;
+  border-radius: 0 0 50% 50% / 0 0 44% 44%;
+  background: linear-gradient(to bottom, $lava-shade 0%, $lava-body 78%);
+  transform-origin: 50% 0;
+  animation: lava-cap-swell 13s ease-in-out infinite;
+}
+
+// Each blob is a full-height "lane" so its rise can be expressed as a
+// percentage of the lamp, not of its own diameter
+.lava-blob {
+  position: absolute;
+  bottom: 0;
+  left: var(--x, 20%);
+  width: min(var(--size, 55%), 180px);
+  height: 100%;
+  animation: lava-rise var(--dur, 24s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+  will-change: transform;
+
+  // The wax itself — squashes, sways and wobbles independently of the rise
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    aspect-ratio: 1;
+    background: radial-gradient(
+      circle at 34% 28%,
+      $lava-core 0%,
+      $lava-body 54%,
+      $lava-shade 100%
+    );
+    border-radius: 50%;
+    animation:
+      lava-sway var(--sway, 13s) ease-in-out infinite,
+      lava-morph var(--morph, 11s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+    will-change: transform, border-radius;
+  }
+
+  // Staggered so no two blobs share a rhythm — a lamp where everything
+  // moves in step reads as an animation, not as convection. Durations are
+  // deliberately non-harmonic so the pattern takes minutes to repeat.
+  &--1 { --x: 6%;  --size: 62%; --dur: 26s; --sway: 14s; --morph: 11s; }
+  &--2 { --x: 44%; --size: 44%; --dur: 34s; --sway: 17s; --morph: 13s; }
+  &--3 { --x: 24%; --size: 72%; --dur: 41s; --sway: 21s; --morph: 16s; }
+  &--4 { --x: 62%; --size: 34%; --dur: 22s; --sway: 11s; --morph: 9s;  }
+  &--5 { --x: -4%; --size: 38%; --dur: 30s; --sway: 15s; --morph: 12s; }
+  &--6 { --x: 70%; --size: 22%; --dur: 18s; --sway: 9s;  --morph: 7s;  }
+}
+
+/* ===== MODAL (centered, blurred backdrop) ===== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20000; /* above sidebar/video */
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+}
+
+.modal-card {
+  width: calc(100vw - 40px);
+  max-height: calc(100vh - 120px);
+  overflow: auto;
+  background: rgba(18, 18, 20, 0.92);
+  color: white;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+
+  h4 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-family: $primary-font-family;
+  }
+}
+
+.modal-close {
+  background: transparent;
+  border: 0;
+  color: white;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 8px;
+
+  &:hover { opacity: 0.8; }
+}
+
+.modal-body {
+  padding: 14px 16px 18px;
+}
+
+/* ===== BALLOT ===== */
+.ballot-card {
+  display: grid;
+  gap: 12px;
+  font-family: $primary-font-family;
+  color: white;
+}
+
+.ballot-header {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.ballot-thumb {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.15);
+}
+
+.ballot-meta { min-width: 0; }
+.ballot-title { margin: 0; font-size: 1rem; line-height: 1.2; }
+.ballot-byline { margin: 2px 0 0; font-size: 0.85rem; color: rgba(255,255,255,0.75); }
+.ballot-synopsis { margin: 6px 0 0; font-size: 0.9rem; color: rgba(255,255,255,0.7); }
+
+.ballot-controls { display: grid; gap: 14px; }
+
+.label { font-size: 0.8rem; color: rgba(255,255,255,0.75); }
+
+.linklike {
+  background: transparent;
+  border: 0;
+  font-size: 0.8rem;
+  color: $primary-color;
+  cursor: pointer;
+  padding: 0;
+}
+
+.ballot-score__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.star-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.star {
+  border: 0;
+  background: transparent;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: transform 80ms ease, opacity 80ms ease;
+
+  &.filled { opacity: 1; }
+  &:hover { transform: scale(1.05); }
+}
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  input[type="range"] {
+    width: 100%;
+    accent-color: $primary-color;
+  }
+}
+
+.score-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 24px;
+  padding: 0 8px;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.14);
+}
+
+.ballot-tags .tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.tag-chip {
+  border: 0;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.12);
+  color: white;
+  cursor: pointer;
+  transition: background 120ms ease, box-shadow 120ms ease;
+
+  &.selected {
+    background: rgba(255,255,255,0.22);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.18);
+  }
+}
+
+.ballot-notes textarea {
+  width: 100%;
+  resize: vertical;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 10px;
+  background: rgba(0,0,0,0.25);
+  padding: 8px;
+  color: white;
+  font-family: $primary-font-family;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 2px rgba($primary-color, 0.25);
+  }
+}
+
+.ballot-actions {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 10px;
+  justify-content: end;
+}
+
+.btn-primary,
+.btn-secondary {
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 0;
+  cursor: pointer;
+  font-family: $primary-font-family;
+}
+
+.btn-primary {
+  background: $primary-color;
+  color: #111;
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.18);
+  color: white;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .modal-backdrop { backdrop-filter: none; }
+  .star { transition: none; }
+
+  // Freeze the lamp: blobs hold a scattered mid-cycle pose instead of moving
+  .lava-glow,
+  .lava-pool,
+  .lava-cap,
+  .lava-blob,
+  .lava-blob::before {
+    animation: none !important;
+  }
+
+  .lava-blob {
+    &--1 { transform: translateY(-30%); }
+    &--2 { transform: translateY(-62%); }
+    &--3 { transform: translateY(-8%); }
+    &--4 { transform: translateY(-70%); }
+    &--5 { transform: translateY(-44%); }
+    &--6 { transform: translateY(-20%); }
+  }
+}
+.ballot-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Top bar: view toggle + stepper */
+/* ===== Ballot topbar (simplified) ===== */
+.ballot-topbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 2px;
+
+  .see-all-btn {
+    padding: 6px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    background: rgba(255, 255, 255, 0.06);
+    color: $channel-text-color;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: $primary-font-family;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: background 120ms ease, border-color 120ms ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.35);
+    }
+  }
+}
+
+/* Toggle between "Rate one-by-one" and "See all films" */
+.view-toggle {
+  display: inline-flex;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+
+  .tab {
+    padding: 8px 12px;
+    border: none;
+    background: transparent;
+    color: $channel-text-color;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: $primary-font-family;
+
+    &.active {
+      background: rgba(255, 255, 255, 0.10);
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+  }
+}
+
+/* Prev/Next mini stepper */
+.film-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  .btn-ghost {
+    padding: 6px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    background: rgba($background-color-primary, 0.82);
+    color: $channel-text-color;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: $primary-font-family;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  .step-indicator {
+    opacity: 0.85;
+    font-weight: 600;
+    font-family: $primary-font-family;
+  }
+}
+
+/* Grid of all films */
+.film-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 4px;
+}
+
+/* Individual film card used in the grid selector */
+.film-card {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  text-align: left;
+  color: $channel-text-color;
+  transition: border-color 120ms ease, background 120ms ease, box-shadow 120ms ease;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  /* Selected film highlight */
+  &.selected {
+    /* use CSS var if present; fall back to theme primary */
+    --accent: #8cf;
+    border-color: var(--accent, $primary-color);
+    box-shadow: 0 0 0 2px rgba(140, 200, 255, 0.25) inset;
+  }
+
+  .film-thumb {
+    width: 56px;
+    height: 56px;
+    flex: 0 0 auto;
+    border-radius: 6px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.06);
+    display: grid;
+    place-items: center;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .thumb-fallback {
+      font-weight: 800;
+      opacity: 0.7;
+      color: $channel-text-color;
+    }
+  }
+
+  .film-info {
+    display: grid;
+    gap: 4px;
+    align-content: center;
+
+    .film-title {
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 0;
+    }
+
+    .film-meta {
+      opacity: 0.75;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+  }
+}
+/* === Star colors === */
+.star {
+  color: rgba(255, 255, 255, 0.35);  /* unfilled/star baseline */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.star.filled {
+  color: $primary-color;             /* filled/star color */
+  text-shadow: 0 0 8px rgba($primary-color, 0.25);
+}
+
+/* Optional: nicer hover preview */
+.star:hover {
+  color: color.adjust($primary-color, $lightness: 8%);
+  opacity: 1;
+}
+
+/* Keyboard focus ring for accessibility */
+.star:focus-visible {
+  outline: 2px solid rgba($primary-color, 0.6);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Wider modal for grid view on small screens */
+@media (max-width: 640px) {
+  .film-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}
+
+/* ===== TRENDING CHANNELS ===== */
+.trending-channels {
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+  h4 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0 0 0.5rem 0.25rem;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    font-size: 0.85rem;
+    margin-bottom: 2px;
+    // Opaque row so blobs travel behind the channel list rather than through it
+    background: rgba($background-color-primary, 0.82);
+    backdrop-filter: blur(6px);
+
+    &:hover {
+      background: rgba($background-color-secondary, 0.92);
+    }
+
+    &.active {
+      background: color.mix($primary-color, $background-color-primary, 22%);
+
+      .trending-rank {
+        color: $primary-color;
+      }
+    }
+  }
+
+  .trending-rank {
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+    min-width: 14px;
+    text-align: center;
+  }
+
+  .trending-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #fff;
+    font-weight: 500;
+  }
+
+  .trending-viewers {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    white-space: nowrap;
+  }
+}
+
+/* ===== SAVED CHANNELS ===== */
+.saved-channels {
+  h4 {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .save-star-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.3rem;
+    line-height: 1;
+    padding: 0 2px;
+    color: rgba(255, 255, 255, 0.3);
+    transition: color 0.15s ease, transform 0.15s ease;
+
+    &:hover:not(:disabled) {
+      color: rgba(255, 255, 255, 0.6);
+      transform: scale(1.2);
+    }
+
+    &.saved {
+      color: $primary-color;
+      text-shadow: 0 0 6px rgba($primary-color, 0.4);
+    }
+
+    &:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+  }
+
+  .saved-empty {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.35);
+    margin: 0 0 0 0.25rem;
+    font-style: italic;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+  }
+}
+
+/* ===== LAVA LAMP ANIMATIONS ===== */
+
+// The convection cycle: sit in the pool reheating, tear away and rise,
+// dwell at the ceiling while cooling, then sink back and remerge.
+// The long flat holds at 0% and 100% are what sell it — real wax spends
+// most of its time waiting, not travelling.
+@keyframes lava-rise {
+  0%,  10% { transform: translateY(6%); }    // pooled, absorbing heat
+  20%      { transform: translateY(-4%); }   // necks up out of the pool
+  46%      { transform: translateY(-72%); }  // ascent
+  56%      { transform: translateY(-78%); }  // dwells against the cap
+  90%, 100% { transform: translateY(6%); }   // sinks back and remerges
+}
+
+// Sideways drift plus squash-and-stretch: stretched thin while climbing,
+// flattened where it meets the ceiling, spread wide in the pool
+@keyframes lava-sway {
+  0%   { transform: translateX(0)   scale(1.04, 0.9); }
+  28%  { transform: translateX(9%)  scale(0.93, 1.12); }
+  55%  { transform: translateX(-7%) scale(1.08, 0.88); }
+  80%  { transform: translateX(4%)  scale(0.97, 1.05); }
+  100% { transform: translateX(0)   scale(1.04, 0.9); }
+}
+
+// Slow asymmetric wobble so the silhouette is never a clean circle
+@keyframes lava-morph {
+  0%, 100% { border-radius: 46% 54% 58% 42% / 52% 48% 52% 48%; }
+  33%      { border-radius: 58% 42% 44% 56% / 42% 58% 44% 56%; }
+  66%      { border-radius: 42% 58% 52% 48% / 58% 42% 56% 44%; }
+}
+
+// Reservoir breathing as it heats
+@keyframes lava-pool-swell {
+  0%, 100% { transform: scaleY(1)    translateX(0); }
+  50%      { transform: scaleY(1.14) translateX(-3%); }
+}
+
+// Cooled wax at the ceiling shifting as blobs merge into it
+@keyframes lava-cap-swell {
+  0%, 100% { transform: scaleY(1)    translateX(0); }
+  50%      { transform: scaleY(1.22) translateX(4%); }
+}
+
+// Bulb flicker
+@keyframes lava-bulb {
+  0%, 100% { opacity: 0.85; transform: translateX(-50%) scaleY(1); }
+  50%      { opacity: 1;    transform: translateX(-50%) scaleY(1.1); }
+}

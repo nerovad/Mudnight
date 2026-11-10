@@ -1,0 +1,639 @@
+@use "sass:color";
+@use "../../styles/_variables.scss" as *;
+
+.tournament-bracket {
+  min-height: 60vh;
+  padding: 1rem;
+  color: $text-color-primary;
+  font-family: $primary-font-family;
+
+  &.loading,
+  &.error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40vh;
+
+    .spinner {
+      font-size: 1.2rem;
+      color: $primary-color;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    p {
+      color: #ff6b6b;
+      font-size: 1.1rem;
+    }
+  }
+
+  .tournament-status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    background: $background-color-secondary;
+    border: 1px solid $border-color-primary;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+
+    .status-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      text-transform: uppercase;
+
+      &.in-progress {
+        background: $primary-color;
+        color: $channel-text-color;
+        text-shadow: 0 0 10px rgba($primary-color, 0.6);
+      }
+
+      &.complete {
+        background: $secondary-color;
+        color: $background-color-primary;
+        text-shadow: 0 0 10px rgba($secondary-color, 0.6);
+      }
+    }
+
+    .voting-status {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: bold;
+
+      &.active {
+        background: rgba($secondary-color, 0.2);
+        border: 1px solid $secondary-color;
+        color: $secondary-color;
+        text-shadow: 0 0 10px rgba($secondary-color, 0.6);
+      }
+
+      &.inactive {
+        background: rgba($text-color-secondary, 0.2);
+        border: 1px solid $text-color-secondary;
+        color: $text-color-secondary;
+      }
+    }
+  }
+
+  .bracket-container {
+    display: flex;
+    gap: 3rem;
+    overflow-x: auto;
+    padding: 2rem 1rem;
+    min-height: 500px;
+
+    &::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: $background-color-secondary;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $primary-color;
+      border-radius: 4px;
+
+      &:hover {
+        background: color.adjust($primary-color, $lightness: 10%);
+      }
+    }
+
+    .bracket-round {
+      display: flex;
+      flex-direction: column;
+      min-width: 300px;
+
+      .round-header {
+        text-align: center;
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: $accent-secondary-color;
+        text-shadow: 0 0 10px rgba($accent-secondary-color, 0.6);
+        margin-bottom: 1.5rem;
+        padding: 0.5rem;
+        border-bottom: 2px solid $border-color-primary;
+      }
+
+      .matchups {
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+        justify-content: space-around;
+        flex: 1;
+      }
+    }
+  }
+
+  .matchup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: rgba($background-color-secondary, 0.4);
+    border: 1px solid $border-color-primary;
+    border-radius: 8px;
+    padding: 1rem;
+
+    .film-slot {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: rgba($background-color-secondary, 0.6);
+      border: 2px solid $border-color-primary;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      position: relative;
+
+      &.bye {
+        justify-content: center;
+        color: $text-color-secondary;
+        font-style: italic;
+        opacity: 0.5;
+      }
+
+      &.votable {
+        cursor: pointer;
+        
+        &:hover {
+          border-color: $primary-color;
+          background: rgba($primary-color, 0.1);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+      }
+
+      &.winner {
+        border-color: $secondary-color;
+        background: rgba($secondary-color, 0.15);
+        box-shadow: 0 0 15px rgba($secondary-color, 0.4);
+      }
+
+      &.user-voted {
+        border-color: $accent-secondary-color;
+        background: rgba($accent-secondary-color, 0.1);
+        
+        &::after {
+          content: '✓';
+          position: absolute;
+          top: 0.5rem;
+          right: 5rem;
+          font-size: 0.7rem;
+          font-weight: bold;
+          color: $accent-secondary-color;
+          padding: 0.2rem 0.4rem;
+          background: rgba($accent-secondary-color, 0.2);
+          border-radius: 4px;
+          text-shadow: 0 0 8px rgba($accent-secondary-color, 0.6);
+        }
+      }
+
+      &.voting {
+        pointer-events: none;
+        opacity: 0.6;
+        
+        &::after {
+          content: 'Voting...';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          font-size: 1rem;
+          font-weight: bold;
+          color: $primary-color;
+          animation: pulse 1s ease-in-out infinite;
+        }
+      }
+
+      .film-seed {
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: $primary-color;
+        background: rgba($primary-color, 0.2);
+        padding: 0.3rem 0.6rem;
+        border-radius: 4px;
+        min-width: 50px;
+        text-align: center;
+        text-shadow: 0 0 8px rgba($primary-color, 0.6);
+      }
+
+      .film-thumbnail {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 1px solid $border-color-primary;
+      }
+
+      .film-info {
+        flex: 1;
+        min-width: 0;
+
+        .film-title {
+          font-size: 1rem;
+          font-weight: bold;
+          color: $text-color-primary;
+          margin: 0 0 0.3rem 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .film-creator {
+          font-size: 0.85rem;
+          color: $text-color-secondary;
+          margin: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+
+      .vote-stats {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+        min-width: 80px;
+
+        .vote-count {
+          font-size: 0.85rem;
+          color: $secondary-color;
+          font-weight: bold;
+          text-align: right;
+          text-shadow: 0 0 8px rgba($secondary-color, 0.5);
+        }
+
+        .vote-bar {
+          height: 6px;
+          background: rgba($border-color-primary, 0.3);
+          border-radius: 3px;
+          overflow: hidden;
+
+          .vote-fill {
+            height: 100%;
+            background: linear-gradient(90deg, $secondary-color, $primary-color);
+            transition: width 0.3s ease;
+          }
+        }
+
+        .vote-pct {
+          font-size: 0.75rem;
+          color: $text-color-secondary;
+          text-align: right;
+        }
+      }
+    }
+
+    .vs-divider {
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: $accent-secondary-color;
+      padding: 0.3rem 0;
+      text-shadow: 0 0 8px rgba($accent-secondary-color, 0.6);
+    }
+  }
+
+  .champion-banner {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba($secondary-color, 0.2), rgba($primary-color, 0.2));
+    border: 2px solid $secondary-color;
+    border-radius: 12px;
+    text-align: center;
+    animation: glow-pulse 3s ease-in-out infinite;
+    box-shadow: 0 0 30px rgba($secondary-color, 0.3);
+
+    .champion-trophy {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    .champion-details {
+      h2 {
+        font-size: 1.5rem;
+        color: $secondary-color;
+        text-shadow: 0 0 15px rgba($secondary-color, 0.8);
+        margin-bottom: 0.5rem;
+      }
+
+      h3 {
+        font-size: 2rem;
+        color: $text-color-primary;
+        text-shadow: 0 0 15px rgba($primary-color, 0.6);
+        margin-bottom: 0.5rem;
+      }
+
+      p {
+        font-size: 1.1rem;
+        color: $text-color-secondary;
+      }
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba($secondary-color, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba($secondary-color, 0.6);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@media (max-width: 768px) {
+  .tournament-bracket {
+    .tournament-status-bar {
+      flex-direction: column;
+      align-items: stretch;
+      
+      .status-badge,
+      .voting-status {
+        text-align: center;
+      }
+    }
+
+    .bracket-container {
+      gap: 2rem;
+      
+      .bracket-round {
+        min-width: 250px;
+      }
+    }
+
+    .matchup {
+      .film-slot {
+        flex-direction: column;
+        align-items: flex-start;
+
+        .film-thumbnail {
+          width: 100%;
+          height: auto;
+        }
+      }
+    }
+  }
+}
+
+// Add to the bottom of the file
+
+.confetti-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: -10px;
+  opacity: 0;
+  animation: confetti-fall 3s linear forwards;
+  
+  &:nth-child(odd) {
+    animation: confetti-fall-spin 3s linear forwards;
+  }
+}
+
+@keyframes confetti-fall {
+  0% {
+    top: -10px;
+    opacity: 1;
+  }
+  100% {
+    top: 100vh;
+    opacity: 0;
+  }
+}
+
+@keyframes confetti-fall-spin {
+  0% {
+    top: -10px;
+    opacity: 1;
+    transform: rotate(0deg);
+  }
+  100% {
+    top: 100vh;
+    opacity: 0;
+    transform: rotate(720deg);
+  }
+}
+
+// Enhanced Champion Banner
+.champion-banner {
+  margin-top: 3rem;
+  padding: 3rem 2rem;
+  background: linear-gradient(135deg, rgba($secondary-color, 0.3), rgba($primary-color, 0.3));
+  border: 3px solid $secondary-color;
+  border-radius: 16px;
+  text-align: center;
+  animation: glow-pulse 3s ease-in-out infinite;
+  box-shadow: 0 0 40px rgba($secondary-color, 0.5);
+  position: relative;
+  overflow: hidden;
+
+  // Animated background shimmer
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      transparent 30%,
+      rgba($secondary-color, 0.1) 50%,
+      transparent 70%
+    );
+    animation: shimmer 3s linear infinite;
+  }
+
+  .champion-trophy {
+    font-size: 5rem;
+    margin-bottom: 1rem;
+    animation: bounce 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba($secondary-color, 0.8));
+  }
+
+  .champion-details {
+    position: relative;
+    z-index: 1;
+
+    h2 {
+      font-size: 2rem;
+      color: $secondary-color;
+      text-shadow: 0 0 20px rgba($secondary-color, 1);
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .champion-film {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      padding: 2rem;
+      background: rgba($background-color-secondary, 0.8);
+      border: 2px solid $primary-color;
+      border-radius: 12px;
+      max-width: 600px;
+      margin: 0 auto;
+      animation: winner-reveal 1s ease-out;
+
+      .champion-thumbnail {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 3px solid $secondary-color;
+        box-shadow: 0 0 30px rgba($secondary-color, 0.6);
+        animation: trophy-spin 20s linear infinite;
+      }
+
+      .champion-info {
+        flex: 1;
+        text-align: left;
+
+        .champion-seed {
+          display: inline-block;
+          background: rgba($primary-color, 0.3);
+          color: $primary-color;
+          padding: 0.4rem 1rem;
+          border-radius: 6px;
+          font-size: 0.9rem;
+          font-weight: bold;
+          margin-bottom: 0.8rem;
+          text-shadow: 0 0 10px rgba($primary-color, 0.8);
+        }
+
+        .champion-title {
+          font-size: 2rem;
+          color: $text-color-primary;
+          text-shadow: 0 0 15px rgba($primary-color, 0.6);
+          margin: 0.5rem 0;
+          line-height: 1.2;
+        }
+
+        .champion-creator {
+          font-size: 1.1rem;
+          color: $text-color-secondary;
+          margin: 0.5rem 0 1rem 0;
+          font-style: italic;
+        }
+
+        .champion-stats {
+          margin-top: 1rem;
+          padding-top: 1rem;
+          border-top: 1px solid $border-color-primary;
+
+          .final-score {
+            font-size: 1rem;
+            color: $secondary-color;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba($secondary-color, 0.6);
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) translateY(-100%);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%);
+  }
+}
+
+@keyframes winner-reveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) rotateY(-90deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotateY(0deg);
+  }
+}
+
+@keyframes trophy-spin {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .champion-banner {
+    padding: 2rem 1rem;
+
+    .champion-trophy {
+      font-size: 3rem;
+    }
+
+    .champion-details {
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      .champion-film {
+        flex-direction: column;
+        text-align: center;
+
+        .champion-thumbnail {
+          width: 120px;
+          height: 120px;
+        }
+
+        .champion-info {
+          text-align: center;
+
+          .champion-title {
+            font-size: 1.5rem;
+          }
+        }
+      }
+    }
+  }
+}

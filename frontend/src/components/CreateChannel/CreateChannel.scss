@@ -1,0 +1,140 @@
+@use "sass:color";
+@use "../../styles/_variables.scss" as *;
+
+.create-channel-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10001;
+  font-family: $primary-font-family;
+  color: $primary-color;
+
+  .create-channel-content {
+    width: 90%;
+    max-width: 700px;
+    background: linear-gradient(
+      to bottom,
+      $background-color-primary,
+      color.adjust($background-color-primary, $lightness: -10%)
+    );
+    border: 2px solid $border-color-primary;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba($primary-color, 0.6);
+    padding: 20px;
+    position: relative;
+    text-align: left;
+
+    // subtle scanline like the guide
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        rgba($primary-color, 0.03) 0px,
+        rgba($accent-secondary-color, 0.02) 3px
+      );
+      pointer-events: none;
+      border-radius: 10px;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      color: $secondary-color;
+      text-align: center;
+    }
+
+    // reuse your form’s own styling, but remove extra box styling so it fits the modal
+    .create-channel-form {
+      margin: 0;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+    }
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: $background-color-primary;
+    border: none;
+    color: $channel-text-color;
+    padding: 8px 12px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+
+    &:hover { background: $secondary-color; }
+  }
+}
+.create-channel-form {
+  .form-group {
+    margin-bottom: 20px;
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: $secondary-color;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      background: $background-color-primary;
+      border: 1px solid $border-color-primary;
+      border-radius: 5px;
+      color: $primary-color;
+      font-family: $primary-font-family;
+      font-size: 14px;
+
+      &:focus {
+        outline: none;
+        border-color: $secondary-color;
+        box-shadow: 0 0 5px rgba($secondary-color, 0.5);
+      }
+    }
+
+    small {
+      display: block;
+      margin-top: 5px;
+      color: $channel-text-color;
+      font-size: 12px;
+    }
+  }
+
+  .error-message {
+    color: #ff4444;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: rgba(255, 68, 68, 0.1);
+    border: 1px solid #ff4444;
+    border-radius: 5px;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: $secondary-color;
+    border: none;
+    color: $background-color-primary;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      background: color.adjust($secondary-color, $lightness: 10%);
+      box-shadow: 0 0 10px rgba($secondary-color, 0.5);
+    }
+  }
+}

@@ -1,0 +1,198 @@
+@use "../../styles/_variables.scss" as *;
+@use "../../styles/_spacecadet.scss" as *;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+.chatbox-container {
+  font-family: $primary-font-family;
+  position: fixed;
+  top: 50px;
+  right: 0;
+  height: calc(100vh - 50px - var(--ticker-height, 50px));
+  // Panel black, shared with the nav bar and news ticker.
+  background-color: $sc-panel-black;
+  transition: width 0.3s ease-in-out, height 0.3s ease-in-out;
+  z-index: 10000;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+  min-width: 0;
+
+  &.open {
+    width: $sidebar-width;
+    overflow-y: auto;
+  }
+
+  &:not(.open) {
+    width: 0;
+    overflow: hidden;
+  }
+
+  /* Mobile portrait inline mode — fills panel below video */
+  &.mobile-inline {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100% !important;
+    height: 100% !important;
+    box-shadow: none;
+    z-index: auto;
+    overflow: hidden;
+
+    .chatbox-content {
+      overflow: hidden;
+
+      .messages {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+      }
+
+      input {
+        flex-shrink: 0;
+      }
+
+      .chat-button {
+        flex-shrink: 0;
+      }
+    }
+  }
+}
+
+/* Hide chatbox arrow in mobile portrait */
+@media (max-width: 768px) and (orientation: portrait) {
+  .toggle-button-right {
+    display: none !important;
+  }
+}
+
+.toggle-button-right {
+  position: fixed;
+  top: 60px;
+  right: 0;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 10001;
+  padding: 8px;
+  transition: transform 0.12s ease-in-out, filter 0.12s ease-in-out, right 0.3s ease-in-out;
+
+  &:hover {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 8px $primary-color) brightness(1.2);
+  }
+
+  img {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease-in-out;
+    transform: rotate(180deg);
+  }
+
+  &.open {
+    right: $sidebar-width - $sidebar-toggle-inset;
+
+    img {
+      transform: rotate(0deg);
+    }
+  }
+}
+
+.chatbox-content {
+  font-family: inherit;
+  height: 100%;
+  overflow-y: auto;
+  padding: 0rem 1rem;
+  padding-bottom: 1rem;
+  box-sizing: border-box;
+  // Fills the panel edge to edge, so it has to carry the same panel black
+  // as .chatbox-container or it would just mask it.
+  background-color: $sc-panel-black;
+  color: white;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+
+  &.open {
+    display: flex;
+    flex-direction: column;
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* In mobile inline mode, reduce header spacing */
+  .mobile-inline & {
+    height: 100%;
+
+    h3 {
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+    }
+  }
+
+  h3 {
+    font-family: inherit;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    margin-top: 1rem;
+    text-align: center;
+  }
+
+  .messages {
+    font-family: inherit;
+    font-size: 1.05rem;
+    flex-grow: 1;
+    overflow-y: auto;
+    background: $background-color-primary;
+    border: 2px solid $border-color-primary;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+
+  input {
+    font-family: inherit;
+    font-size: 1.05rem;
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    background: $background-color-primary;
+    border: 2px solid $border-color-primary;
+    color: white;
+    outline: none;
+
+    &:focus-within {
+      border: 2px solid $secondary-color;
+    }
+  }
+}
+
+.chat-button {
+  background-color: $primary-color;
+  font-family: inherit;
+  width: 100%;
+  color: white;
+  border: none;
+  margin-top: 7px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: $secondary-color;
+    transform: scale(1.02);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+}
+

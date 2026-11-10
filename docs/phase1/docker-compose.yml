@@ -1,0 +1,41 @@
+# Phase 1 harness: everything Cinezoo will eventually own, minus ffplayout itself.
+#
+#   edge       - nginx-rtmp + HLS. Stands in for cinezoo.tv's streaming server.
+#                Mirrors production exactly: RTMP in on 1935, HLS out at
+#                /hls/<stream_key>/index.m3u8.
+#   playlists  - a dumb static file server. Stands in for Cinezoo's future
+#                GET /api/channels/:slug/playlist/YYYY/MM/DD.json endpoint.
+#                ffplayout PULLS from here; file mtime becomes Last-Modified.
+#   asrun      - receives the as-run POSTs the ffplayout task script sends.
+#                Stands in for POST /api/playout/asrun. Just prints them.
+#
+# ffplayout itself is NOT in here — you install it separately (README step 2),
+# because that's what a real station owner does, and its Rust build is slow.
+
+services:
+  edge:
+    build: ./edge
+    ports:
+      - "1935:1935"     # RTMP ingest (ffplayout pushes here; OBS could too)
+      - "8088:8080"     # HLS out — 8088 mirrors production's cinezoo.tv:8088
+    restart: unless-stopped
+
+  playlists:
+    image: python:3.12-slim
+    working_dir: /srv
+    command: python -m http.server 8085
+    volumes:
+      - ./playlists:/srv:ro
+    ports:
+      - "8085:8085"     # ffplayout channel "playlists" URL points at this
+    restart: unless-stopped
+
+  asrun:
+    image: python:3.12-slim
+    working_dir: /app
+    command: python receiver.py
+    volumes:
+      - ./asrun:/app:ro
+    ports:
+      - "8099:8099"     # asrun.sh curls here on every clip start
+    restart: unless-stopped

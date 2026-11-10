@@ -1,0 +1,469 @@
+@use "sass:color";
+@use "../../styles/_variables.scss" as *;
+
+// Modal overlay and container
+.tournament-console-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+
+  .modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-content {
+    position: relative;
+    z-index: 1001;
+    width: 100%;
+    max-width: 1200px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: $background-color-primary;
+    border: 2px solid $primary-color;
+    border-radius: 12px;
+    box-shadow: 0 0 30px rgba($primary-color, 0.4);
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $primary-color;
+      border-radius: 4px;
+
+      &:hover {
+        background: color.adjust($primary-color, $lightness: 10%);
+      }
+    }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: white;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 10;
+
+    &:hover {
+      background: rgba(255, 59, 59, 0.2);
+      border-color: #ff3b3b;
+      transform: rotate(90deg);
+    }
+  }
+}
+
+.tournament-console {
+  padding: 2rem;
+  color: $text-color-primary;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  &.loading,
+  &.error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40vh;
+
+    .spinner {
+      font-size: 1.2rem;
+      color: $primary-color;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    p {
+      color: $text-color-secondary;
+      font-size: 1.1rem;
+    }
+  }
+
+  .console-header {
+    background: rgba($background-color-primary, 0.6);
+    border: 2px solid $border-color-primary;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+
+    h2 {
+      font-size: 1.8rem;
+      color: $accent-secondary-color;
+      text-shadow: $channel-text-color;
+      margin: 0 0 1rem 0;
+    }
+
+    .tournament-info {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+
+      .info-item {
+        font-size: 1rem;
+        color: $text-color-secondary;
+      }
+
+      .status-badge {
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: bold;
+        text-transform: uppercase;
+
+        &.active {
+          background: $secondary-color;
+          color: $background-color-primary;
+        }
+
+        &.inactive {
+          background: rgba($text-color-secondary, 0.3);
+          color: $secondary-color;
+        }
+
+        &.complete {
+          background: $primary-color;
+          color: $text-color-primary
+        }
+      }
+    }
+  }
+
+  .console-controls {
+    background: rgba($background-color-secondary, 0.6);
+    border: 1px solid $border-color-primary;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+
+    .control-section {
+      h3 {
+        font-size: 1.3rem;
+        color: $primary-color;
+        text-shadow: $channel-text-color;
+        margin: 0 0 1rem 0;
+      }
+
+      .active-voting,
+      .inactive-voting {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        .voting-status {
+          font-size: 1.1rem;
+          color: $text-color-primary;
+          margin: 0;
+          padding: 0.8rem;
+          background: rgba($background-color-primary, 0.4);
+          border-radius: 6px;
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  .btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-family: $primary-font-family;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &.btn-primary {
+      background: $secondary-color;
+      color: $background-color-primary;
+      box-shadow: 0 4px 12px rgba($secondary-color, 0.3);
+
+      &:hover:not(:disabled) {
+        background: color.adjust($secondary-color, $lightness: 10%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba($secondary-color, 0.5);
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
+    }
+
+    &.btn-danger {
+      background: $accent-secondary-color;
+      color: $text-color-primary;
+      box-shadow: 0 4px 12px rgba($accent-secondary-color, 0.3);
+
+      &:hover:not(:disabled) {
+        background: color.adjust($accent-secondary-color, $lightness: 10%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba($accent-secondary-color, 0.5);
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
+    }
+  }
+
+  .rounds-overview {
+    h3 {
+      font-size: 1.5rem;
+      color: $primary-color;
+      text-shadow: $channel-text-color;
+      margin: 0 0 1.5rem 0;
+    }
+
+    .round-card {
+      background: rgba($background-color-secondary, 0.6);
+      border: 1px solid $border-color-primary;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
+
+      &.current {
+        border-color: $primary-color;
+        box-shadow: 0 0 20px rgba($primary-color, 0.3);
+      }
+
+      &.voting {
+        border-color: $secondary-color;
+        background: rgba($secondary-color, 0.05);
+        box-shadow: 0 0 25px rgba($secondary-color, 0.4);
+      }
+
+      .round-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 1px solid $border-color-primary;
+
+        h4 {
+          font-size: 1.2rem;
+          color: $text-color-primary;
+          margin: 0;
+        }
+
+        .round-status {
+          display: flex;
+          gap: 0.5rem;
+          align-items: center;
+
+          .badge {
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+
+            &.voting {
+              background: $secondary-color;
+              color: $background-color-primary;
+              animation: pulse 2s ease-in-out infinite;
+            }
+          }
+
+          .progress-badge {
+            font-size: 0.85rem;
+            color: $text-color-secondary;
+            background: rgba($background-color-primary, 0.4);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+          }
+        }
+      }
+
+      .matchups-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+
+        .matchup-item {
+          display: flex;
+          gap: 1rem;
+          align-items: center;
+          padding: 0.8rem;
+          background: rgba($background-color-primary, 0.3);
+          border: 1px solid $border-color-primary;
+          border-radius: 6px;
+          transition: all 0.2s ease;
+
+          &.decided {
+            border-color: $secondary-color;
+            background: rgba($secondary-color, 0.05);
+          }
+
+          &:hover {
+            background: rgba($background-color-primary, 0.5);
+          }
+
+          .matchup-number {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: $accent-secondary-color;
+            min-width: 30px;
+            text-align: center;
+          }
+
+          .matchup-details {
+            flex: 1;
+
+            .film-vs {
+              display: flex;
+              gap: 0.8rem;
+              align-items: center;
+              margin-bottom: 0.5rem;
+
+              span {
+                color: $text-color-primary;
+                font-size: 0.95rem;
+
+                &.winner {
+                  color: $secondary-color;
+                  font-weight: bold;
+                }
+
+                &.vs {
+                  color: $accent-secondary-color;
+                  font-size: 0.85rem;
+                  font-weight: bold;
+                }
+              }
+            }
+
+            .matchup-stats {
+              display: flex;
+              gap: 1rem;
+              align-items: center;
+
+              .total-votes {
+                font-size: 0.85rem;
+                color: $text-color-secondary;
+              }
+
+              .decided-badge {
+                font-size: 0.75rem;
+                color: $secondary-color;
+                font-weight: bold;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .tournament-complete {
+    text-align: center;
+    padding: 3rem;
+    background: linear-gradient(135deg, rgba($secondary-color, 0.2), rgba($primary-color, 0.2));
+    border: 2px solid $secondary-color;
+    border-radius: 12px;
+    margin-top: 2rem;
+
+    h3 {
+      font-size: 2rem;
+      color: $secondary-color;
+      text-shadow: $channel-text-color;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: $text-color-secondary;
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@media (max-width: 768px) {
+  .tournament-console {
+    padding: 1rem;
+
+    .console-header {
+      padding: 1rem;
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      .tournament-info {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+
+        .status-badge {
+          text-align: center;
+        }
+      }
+    }
+
+    .rounds-overview {
+      .round-card {
+        padding: 1rem;
+
+        .round-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.5rem;
+        }
+
+        .matchups-list {
+          .matchup-item {
+            flex-direction: column;
+            align-items: flex-start;
+
+            .matchup-details {
+              .film-vs {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.3rem;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

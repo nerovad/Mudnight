@@ -1,0 +1,438 @@
+@use "../../styles/_variables.scss" as *;
+
+.admin-page {
+  min-height: 100vh;
+  background-color: $background-color-primary;
+  color: $text-color-primary;
+  font-family: $primary-font-family;
+  padding: 80px 2rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 1.8rem;
+      color: $primary-color;
+      text-shadow: 0 0 12px rgba($primary-color, 0.4);
+    }
+  }
+
+  &__back {
+    background: transparent;
+    border: 1.5px solid $primary-color;
+    color: $primary-color;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-family: $primary-font-family;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba($primary-color, 0.15);
+      box-shadow: 0 0 12px rgba($primary-color, 0.3);
+    }
+  }
+
+  &__section {
+    background: rgba($background-color-secondary, 0.5);
+    border: 1px solid rgba($primary-color, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+
+    h2 {
+      font-size: 1.2rem;
+      color: $channel-text-color;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  &__description {
+    color: $text-color-secondary;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+
+    strong {
+      color: $primary-color;
+    }
+  }
+
+  &__error {
+    background: rgba(#ff4444, 0.15);
+    border: 1px solid rgba(#ff4444, 0.4);
+    color: #ff6b6b;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  &__loading {
+    color: $text-color-secondary;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+
+    th {
+      text-align: left;
+      padding: 10px 12px;
+      color: $text-color-secondary;
+      border-bottom: 1px solid rgba($primary-color, 0.3);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba($border-color-primary, 0.5);
+    }
+
+    tr:hover {
+      background: rgba($primary-color, 0.05);
+    }
+  }
+
+  &__current-user {
+    background: rgba($primary-color, 0.08) !important;
+
+    td:nth-child(2)::after {
+      content: " (you)";
+      color: $primary-color;
+      font-size: 0.75rem;
+    }
+  }
+
+  &__section--channels {
+    margin-top: 2rem;
+  }
+
+  &__slug {
+    font-family: monospace;
+    font-size: 0.78rem;
+    color: $text-color-secondary;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  &__btn {
+    background: transparent;
+    border: 1.5px solid;
+    border-radius: 5px;
+    padding: 4px 10px;
+    font-family: $primary-font-family;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &--edit {
+      border-color: rgba($primary-color, 0.5);
+      color: $primary-color;
+
+      &:hover {
+        background: rgba($primary-color, 0.15);
+      }
+    }
+
+    &--save {
+      border-color: rgba(#4caf50, 0.6);
+      color: #4caf50;
+
+      &:hover {
+        background: rgba(#4caf50, 0.15);
+      }
+    }
+
+    &--cancel {
+      border-color: rgba($text-color-secondary, 0.4);
+      color: $text-color-secondary;
+
+      &:hover {
+        background: rgba($text-color-secondary, 0.1);
+      }
+    }
+
+    &--delete {
+      border-color: rgba(#ff4444, 0.5);
+      color: #ff6b6b;
+
+      &:hover {
+        background: rgba(#ff4444, 0.15);
+      }
+    }
+
+    &--confirm-delete {
+      border-color: rgba(#ff4444, 0.8);
+      color: #ff4444;
+      background: rgba(#ff4444, 0.1);
+
+      &:hover {
+        background: rgba(#ff4444, 0.25);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: wait;
+      }
+    }
+  }
+
+  &__edit-input {
+    background: rgba($background-color-primary, 0.8);
+    color: $text-color-primary;
+    border: 1.5px solid rgba($primary-color, 0.3);
+    border-radius: 5px;
+    padding: 4px 8px;
+    font-family: $primary-font-family;
+    font-size: 0.8rem;
+    width: 100%;
+    min-width: 80px;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+    }
+
+    &--small {
+      width: 50px;
+      min-width: 50px;
+    }
+  }
+
+  &__btn--analytics {
+    border-color: rgba($accent-secondary-color, 0.5);
+    color: $accent-secondary-color;
+
+    &:hover {
+      background: rgba($accent-secondary-color, 0.15);
+    }
+  }
+
+  &__section--analytics {
+    margin-top: 2rem;
+  }
+
+  /* Ticker editor. Rows wrap so the form stays usable on a narrow window
+     without needing its own breakpoint. */
+  &__ticker-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+  }
+
+  &__ticker-form-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+
+    /* The message field is the one that benefits from room; everything else
+       sits at its natural width. */
+    input[type="text"]:not([placeholder="Priority"]) {
+      flex: 1 1 18rem;
+    }
+
+    input[type="url"] {
+      flex: 1 1 14rem;
+    }
+
+    input[type="number"] {
+      width: 6rem;
+      flex: 0 0 auto;
+    }
+
+    label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+      color: $text-color-primary;
+      white-space: nowrap;
+    }
+
+    input,
+    select {
+      background: rgba($background-color-primary, 0.8);
+      color: $text-color-primary;
+      border: 1.5px solid rgba($primary-color, 0.3);
+      border-radius: 5px;
+      padding: 5px 8px;
+      font-family: $primary-font-family;
+      font-size: 0.8rem;
+
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+      }
+    }
+
+    input[type="checkbox"] {
+      padding: 0;
+      width: auto;
+    }
+  }
+
+  &__analytics-search {
+    margin-bottom: 1rem;
+
+    .admin-page__edit-input {
+      width: 100%;
+      max-width: 400px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+    }
+  }
+
+  &__analytics-results {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  &__analytics-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba($background-color-secondary, 0.4);
+    border: 1px solid rgba($primary-color, 0.15);
+    border-radius: 6px;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-family: $primary-font-family;
+    font-size: 0.85rem;
+    color: $text-color-primary;
+    text-align: left;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: rgba($accent-secondary-color, 0.5);
+      background: rgba($accent-secondary-color, 0.08);
+    }
+
+    &-name {
+      font-weight: 600;
+      flex: 1;
+    }
+
+    &-num {
+      color: $primary-color;
+      font-size: 0.75rem;
+    }
+
+    &-owner {
+      color: $text-color-secondary;
+      font-size: 0.75rem;
+    }
+  }
+
+  &__group-select {
+    background: rgba($background-color-primary, 0.8);
+    color: $text-color-primary;
+    border: 1.5px solid rgba($primary-color, 0.3);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-family: $primary-font-family;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: $primary-color;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: wait;
+    }
+
+    &--super_admin {
+      border-color: rgba($primary-color, 0.6);
+      color: $primary-color;
+    }
+
+    &--network {
+      border-color: rgba($secondary-color, 0.6);
+      color: $secondary-color;
+    }
+
+    &--general_user {
+      border-color: rgba($text-color-secondary, 0.4);
+      color: $text-color-secondary;
+    }
+
+    option {
+      background: $background-color-primary;
+      color: $text-color-primary;
+    }
+  }
+}
+
+/* ===== MOBILE STYLES ===== */
+@media (max-width: 768px) {
+  .admin-page {
+    padding: 70px 0.75rem 1rem;
+
+    &__header {
+      margin-bottom: 1rem;
+
+      h1 {
+        font-size: 1.3rem;
+      }
+    }
+
+    &__section {
+      padding: 1rem 0.75rem;
+      border-radius: 8px;
+    }
+
+    &__description {
+      font-size: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    &__table {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      font-size: 0.75rem;
+
+      th {
+        padding: 8px 8px;
+        font-size: 0.65rem;
+        white-space: nowrap;
+      }
+
+      td {
+        padding: 8px 8px;
+        white-space: nowrap;
+      }
+    }
+
+    &__group-select {
+      font-size: 0.7rem;
+      padding: 4px 6px;
+    }
+  }
+}

@@ -1,0 +1,208 @@
+.scheduler-widget {
+  color: #ddd;
+  font-size: 14px;
+
+  .sched-status,
+  .sched-empty {
+    color: #999;
+    padding: 16px 4px;
+    text-align: center;
+  }
+
+  .sched-notice {
+    background: rgba(162, 89, 255, 0.15);
+    border: 1px solid rgba(162, 89, 255, 0.35);
+    color: #c9a2ff;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    font-size: 13px;
+  }
+
+  .sched-cols {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .sched-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 600;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 12px;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    .sched-total {
+      color: #ffce6b;                 // amber LED readout for the loop length
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.04em;
+    }
+  }
+
+  /* --- Media library (left) --- */
+  .sched-lib {
+    flex: 1 1 44%;
+    min-width: 0;
+  }
+
+  .sched-upload {
+    width: 100%;
+    background: rgba(162, 89, 255, 0.22);
+    color: #c9a2ff;
+    border: 1px solid rgba(162, 89, 255, 0.4);
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 13px;
+
+    &:hover:not(:disabled) { background: rgba(162, 89, 255, 0.34); }
+    &:disabled { opacity: 0.5; cursor: default; }
+  }
+
+  .sched-progress {
+    margin: -4px 0 10px;
+  }
+
+  .sched-progress-track {
+    height: 6px;
+    background: rgba(162, 89, 255, 0.15);
+    border: 1px solid rgba(162, 89, 255, 0.3);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .sched-progress-fill {
+    height: 100%;
+    background: #a259ff;
+    border-radius: 999px;
+    transition: width 0.2s linear;
+  }
+
+  .sched-progress-label {
+    margin-top: 4px;
+    color: #c9a2ff;
+    font-size: 11px;
+    text-align: right;
+  }
+
+  .sched-media-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 360px;
+    overflow-y: auto;
+
+    .media-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 8px;
+      margin-bottom: 6px;
+
+      .mi-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+      .mi-title {
+        color: #eee;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        display: flex; align-items: center; gap: 6px;
+
+        .mi-rename-btn {
+          flex: 0 0 auto;
+          background: transparent; border: none; color: #777;
+          cursor: pointer; font-size: 12px; padding: 0; line-height: 1;
+          opacity: 0; transition: opacity 0.12s;
+          &:hover { color: #c9a2ff; }
+        }
+      }
+      &:hover .mi-title .mi-rename-btn { opacity: 1; }
+      .mi-rename {
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid rgba(162, 89, 255, 0.5);
+        border-radius: 6px;
+        color: #fff;
+        font-size: 14px;
+        padding: 3px 6px;
+        width: 100%;
+      }
+      .mi-meta { font-size: 12px; color: #8a8a8a; font-variant-numeric: tabular-nums; }
+
+      &.status-pending .mi-meta { color: #ffce6b; }
+      &.status-failed  .mi-meta { color: #ff7a7a; }
+      &.status-ready   .mi-meta { color: #6fe09a; }
+
+      .mi-add {
+        flex: 0 0 auto;
+        background: rgba(255, 255, 255, 0.08);
+        color: #ccc;
+        border: none;
+        border-radius: 999px;
+        padding: 4px 10px;
+        cursor: pointer;
+        font-size: 12px;
+
+        &:hover:not(:disabled) { background: rgba(162, 89, 255, 0.3); color: #fff; }
+        &:disabled { opacity: 0.4; cursor: default; }
+      }
+    }
+  }
+
+  /* --- Schedule timeline (right) --- */
+  .sched-timeline {
+    flex: 1 1 56%;
+    min-width: 0;
+  }
+
+  .sched-segments {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 360px;
+    overflow-y: auto;
+
+    .seg-block {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      margin-bottom: 4px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      // A subtle "on air" bar — height is set inline, proportional to duration.
+      background: linear-gradient(90deg, rgba(162, 89, 255, 0.16), rgba(162, 89, 255, 0.05));
+      cursor: grab;
+      user-select: none;
+
+      &:active { cursor: grabbing; }
+      &.drag-over { border-color: #a259ff; box-shadow: 0 0 0 2px rgba(162, 89, 255, 0.4) inset; }
+
+      .seg-grip { color: #777; cursor: grab; }
+      .seg-title {
+        flex: 1 1 auto; min-width: 0; color: #fff;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .seg-dur { color: #ffce6b; font-variant-numeric: tabular-nums; font-size: 13px; }
+      .seg-remove {
+        flex: 0 0 auto;
+        background: transparent; border: none; color: #888;
+        font-size: 18px; line-height: 1; cursor: pointer; padding: 0 4px;
+        &:hover { color: #ff7a7a; }
+      }
+    }
+  }
+
+  .sched-foot {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #888;
+    text-align: center;
+  }
+}

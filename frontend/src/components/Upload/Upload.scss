@@ -1,0 +1,51 @@
+.upload-page {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  background: #222;
+  color: #fff;
+  border-radius: 10px;
+
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .upload-section, .festival-section, .custom-settings {
+    margin-bottom: 15px;
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      background: #333;
+      color: #fff;
+    }
+
+    textarea {
+      min-height: 100px;
+    }
+  }
+
+  .upload-btn {
+    width: 100%;
+    padding: 10px;
+    background: #ff4500;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+
+    &:hover {
+      background: #ff6347;
+    }
+  }
+}
+

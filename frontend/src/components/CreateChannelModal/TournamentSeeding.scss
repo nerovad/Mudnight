@@ -1,0 +1,322 @@
+@use "sass:color";
+@use "../../styles/_variables.scss" as *;
+
+.tournament-seeding {
+  padding: 1.5rem;
+  background: $background-color-secondary;
+  border-radius: 8px;
+  margin-top: 1rem;
+  border: 1px solid $border-color-primary;
+
+  .warning {
+    padding: 1rem;
+    background: rgba($accent-secondary-color, 0.15);
+    border: 1px solid rgba($accent-secondary-color, 0.4);
+    border-radius: 6px;
+    text-align: center;
+
+    p {
+      margin: 0.5rem 0;
+      color: $accent-secondary-color;
+      text-shadow: 0 0 10px rgba($accent-secondary-color, 0.5);
+    }
+  }
+
+  .seeding-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    h3 {
+      margin: 0;
+      color: $channel-text-color;
+      font-size: 1.25rem;
+      text-shadow: 0 0 15px rgba($primary-color, 0.6);
+    }
+
+    .seeding-mode-toggle {
+      display: flex;
+      gap: 0.5rem;
+
+      button {
+        padding: 0.5rem 1rem;
+        background: $background-color-primary;
+        border: 1px solid $border-color-primary;
+        border-radius: 4px;
+        color: $text-color-secondary;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: $primary-font-family;
+
+        &:hover {
+          background: color.adjust($background-color-primary, $lightness: 5%);
+          border-color: $primary-color;
+          box-shadow: 0 0 10px rgba($primary-color, 0.3);
+        }
+
+        &.active {
+          background: $primary-color;
+          border-color: $primary-color;
+          color: $channel-text-color;
+          text-shadow: 0 0 10px rgba($primary-color, 0.8);
+          box-shadow: 0 0 15px rgba($primary-color, 0.4);
+        }
+      }
+    }
+  }
+
+  .auto-seed-section,
+  .manual-seed-section {
+    margin-bottom: 1.5rem;
+
+    p {
+      margin-bottom: 1rem;
+      color: $text-color-secondary;
+    }
+
+    .btn-secondary {
+      padding: 0.5rem 1rem;
+      background: $background-color-primary;
+      border: 1px solid $border-color-primary;
+      border-radius: 4px;
+      color: $text-color-primary;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: $primary-font-family;
+
+      &:hover {
+        background: color.adjust($background-color-primary, $lightness: 5%);
+        border-color: $secondary-color;
+        color: $secondary-color;
+        box-shadow: 0 0 15px rgba($secondary-color, 0.3);
+      }
+    }
+  }
+
+  .seed-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 400px;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: $background-color-primary;
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $primary-color;
+      border-radius: 4px;
+
+      &:hover {
+        background: color.adjust($primary-color, $lightness: 10%);
+      }
+    }
+
+    .seed-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1rem;
+      background: $background-color-primary;
+      border: 1px solid $border-color-primary;
+      border-radius: 6px;
+      cursor: move;
+      transition: all 0.2s;
+
+      &:hover {
+        background: color.adjust($background-color-primary, $lightness: 5%);
+        border-color: $primary-color;
+        box-shadow: 0 0 10px rgba($primary-color, 0.3);
+      }
+
+      .seed-number {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+        height: 40px;
+        background: $primary-color;
+        border-radius: 50%;
+        color: $channel-text-color;
+        font-weight: bold;
+        font-size: 0.9rem;
+        text-shadow: 0 0 10px rgba($primary-color, 0.8);
+        box-shadow: 0 0 10px rgba($primary-color, 0.4);
+      }
+
+      .seed-info {
+        flex: 1;
+
+        .seed-title {
+          color: $text-color-primary;
+          font-weight: 500;
+          margin-bottom: 0.25rem;
+        }
+
+        .seed-creator {
+          color: $text-color-secondary;
+          font-size: 0.85rem;
+        }
+      }
+
+      .drag-handle {
+        color: $text-color-secondary;
+        font-size: 1.25rem;
+        cursor: grab;
+
+        &:active {
+          cursor: grabbing;
+          color: $primary-color;
+        }
+      }
+    }
+  }
+
+  .bracket-preview {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: $background-color-primary;
+    border-radius: 8px;
+    border: 1px solid $border-color-primary;
+
+    h4 {
+      margin: 0 0 1rem 0;
+      color: $channel-text-color;
+      font-size: 1.1rem;
+      text-shadow: 0 0 10px rgba($secondary-color, 0.5);
+    }
+
+    .preview-info {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      color: $text-color-secondary;
+      font-size: 0.9rem;
+
+      span {
+        &:not(:first-child):not(:last-child) {
+          color: $text-color-secondary;
+        }
+      }
+    }
+
+    .first-round-matchups {
+      h5 {
+        margin: 0 0 1rem 0;
+        color: $text-color-primary;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .matchup-preview {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem;
+        background: $background-color-secondary;
+        border-radius: 6px;
+        margin-bottom: 0.5rem;
+        border: 1px solid $border-color-primary;
+
+        &:hover {
+          border-color: $primary-color;
+          box-shadow: 0 0 8px rgba($primary-color, 0.2);
+        }
+
+        .matchup-number {
+          min-width: 70px;
+          color: $text-color-secondary;
+          font-size: 0.85rem;
+          font-weight: 500;
+        }
+
+        .matchup-films {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          flex: 1;
+
+          .film {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+            padding: 0.5rem;
+            background: $background-color-primary;
+            border-radius: 4px;
+            border: 1px solid $border-color-primary;
+
+            .seed-badge {
+              display: inline-block;
+              min-width: 28px;
+              height: 28px;
+              line-height: 28px;
+              text-align: center;
+              background: $primary-color;
+              border-radius: 4px;
+              color: $channel-text-color;
+              font-size: 0.75rem;
+              font-weight: bold;
+              text-shadow: 0 0 8px rgba($primary-color, 0.6);
+              box-shadow: 0 0 8px rgba($primary-color, 0.3);
+            }
+
+            span:not(.seed-badge):not(.bye) {
+              color: $text-color-primary;
+              font-size: 0.9rem;
+            }
+
+            .bye {
+              color: $text-color-secondary;
+              font-style: italic;
+            }
+          }
+
+          .vs {
+            color: $text-color-secondary;
+            font-weight: bold;
+            font-size: 0.85rem;
+          }
+        }
+      }
+    }
+  }
+
+  .seeding-actions {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+
+    .btn-primary {
+      padding: 0.75rem 1.5rem;
+      background: $primary-color;
+      border: none;
+      border-radius: 6px;
+      color: $channel-text-color;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: $primary-font-family;
+      text-shadow: 0 0 10px rgba($primary-color, 0.8);
+      box-shadow: 0 0 15px rgba($primary-color, 0.4);
+
+      &:hover {
+        background: color.adjust($primary-color, $lightness: 10%);
+        box-shadow: 0 0 25px rgba($primary-color, 0.6);
+        transform: translateY(-2px);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }
+}

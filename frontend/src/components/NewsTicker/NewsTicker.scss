@@ -1,0 +1,223 @@
+@use "../../styles/_variables.scss" as *;
+@use "../../styles/_spacecadet.scss" as *;
+
+/* ── Space Cadet readout ──────────────────────────────────────────────
+   The ticker as a dot-matrix status display. No frame: the whole strip
+   is the panel, running edge to edge and sitting flush against the
+   bottom of the video.
+
+   Height is driven by --ticker-height, the same variable NewsTicker.tsx
+   sets and VideoPlayer.scss subtracts from the player. Keeping all three
+   on one number is what makes the ticker butt up against the video with
+   no dead strip between them — to make it taller, change the value in
+   NewsTicker.tsx and everything follows. */
+
+.news-ticker {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: var(--ticker-height, 50px);
+  z-index: 100001;
+  background: $sc-panel-black;
+  transition: height 0.3s ease;
+
+  /* Unlit segments: the panel glows faintly even where nothing is on */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(180deg, $sc-led-ghost 0%, transparent 65%);
+  }
+
+  /* Dot-matrix mask — the grid that turns glyphs into lit pixels. Lives
+     on the strip rather than the marquee, whose container is sized by
+     the library and can run wider than the viewport. */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    @include sc-dot-matrix(3px, 0.55);
+  }
+
+  &.minimized {
+    &::before,
+    &::after {
+      display: none;
+    }
+  }
+}
+
+/* The marquee root — centres the text in the full height of the strip */
+.ticker-wrapper {
+  height: 100%;
+  align-items: center;
+  overflow: hidden;
+}
+
+.ticker-item {
+  white-space: nowrap;
+  line-height: 1;
+  @include sc-led-text(26px, 0.14em);
+}
+
+/* Separator between segments. Dimmer than the copy so the strip reads as one
+   continuous readout rather than a list of things. */
+.ticker-separator {
+  white-space: pre;
+  line-height: 1;
+  @include sc-led-text(26px, 0.14em);
+  color: $sc-led-amber-dim;
+  opacity: 0.45;
+  text-shadow: none;
+
+  /* The spacing between segments lives here rather than in the markup, so
+     nothing depends on non-breaking spaces in the component. */
+  padding: 0 1.2em;
+}
+
+/* ── Paid sponsor segment ─────────────────────────────────────────────
+   Same phosphor, same grid, same type. The slot is distinguished by the
+   "Sponsored by" label being dimmer than the message it introduces — not
+   by a box, a border, a background, or a logo.
+
+   That restraint is the point. A raster logo dropped onto a dot-matrix
+   panel breaks the illusion instantly and makes the whole strip read as a
+   banner ad, which is the one thing viewers have trained themselves not to
+   look at. The LED treatment is what the slot is worth paying for. */
+/* Doubled class for specificity (0,2,0). The responsive blocks below re-apply
+   sc-led-text to .ticker-item, which resets `color` — without the extra
+   weight the sponsor tint would silently vanish on mobile. */
+.ticker-item.ticker-item--sponsor {
+  /* Marginally hotter than editorial copy — reads as emphasis, not as a
+     different kind of object. */
+  color: #ffc65a;
+}
+
+.ticker-item__sponsor-label {
+  color: $sc-led-amber-dim;
+  opacity: 0.75;
+  text-shadow: 0 0 2px $sc-led-amber-dim;
+}
+
+.ticker-item.ticker-item--link {
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+
+  /* The marquee pauses on hover, so this underline is reachable. Drawn with
+     a border rather than text-decoration so it picks up the glow. */
+  &:hover,
+  &:focus-visible {
+    border-bottom: 2px solid currentColor;
+    filter: brightness(1.15);
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.ticker-toggle {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+
+  background: transparent;
+  border: none;
+  color: $sc-led-amber;
+  font-size: 12px;
+  line-height: 1;
+  padding: 4px 8px;
+  cursor: pointer;
+  text-shadow: 0 0 6px rgba(255, 140, 26, 0.8);
+  transition: color 0.15s ease, text-shadow 0.15s ease;
+
+  &:hover {
+    color: #ffd27a;
+    text-shadow: 0 0 10px rgba(255, 140, 26, 0.95);
+  }
+
+  /* Collapsed, the strip has no height — park the toggle just above it
+     so there is still something to click. */
+  .minimized & {
+    top: -20px;
+    transform: none;
+    background: $sc-panel-black;
+    border-radius: 4px 4px 0 0;
+    padding: 3px 12px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .news-ticker {
+    /* Finer grid so the dots stay proportional to the smaller glyphs */
+    &::after {
+      @include sc-dot-matrix(2px, 0.5);
+    }
+  }
+
+  .ticker-item,
+  .ticker-separator {
+    @include sc-led-text(15px, 0.1em);
+    text-shadow:
+      0 0 2px $sc-led-amber,
+      0 0 6px rgba(255, 140, 26, 0.7);
+  }
+
+  .ticker-separator {
+    color: $sc-led-amber-dim;
+    text-shadow: none;
+    padding: 0 0.8em;
+  }
+
+  .ticker-toggle {
+    right: 10px;
+    font-size: 10px;
+    padding: 3px 7px;
+
+    .minimized & {
+      top: -18px;
+      font-size: 9px;
+      padding: 2px 10px;
+    }
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .ticker-item,
+  .ticker-separator {
+    @include sc-led-text(11px, 0.1em);
+  }
+
+  .ticker-separator {
+    color: $sc-led-amber-dim;
+    text-shadow: none;
+    padding: 0 0.7em;
+  }
+
+  .ticker-toggle {
+    font-size: 9px;
+    padding: 2px 6px;
+
+    .minimized & {
+      top: -16px;
+      font-size: 8px;
+      padding: 1px 8px;
+    }
+  }
+}
+
+/* Respect reduced-motion users by dropping the bloom, which is the most
+   visually noisy part of the treatment. */
+@media (prefers-reduced-motion: reduce) {
+  .ticker-item {
+    text-shadow: 0 0 2px $sc-led-amber;
+  }
+}

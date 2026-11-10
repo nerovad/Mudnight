@@ -1,0 +1,184 @@
+import React, { useState, useEffect, useCallback } from "react";
+import { View, StyleSheet, StatusBar, Platform } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import * as ScreenOrientation from "expo-screen-orientation";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setStorageAdapter, setApiBaseUrl, useChatStore } from "@cinezoo/shared";
+
+import { AuthProvider } from "./src/contexts/AuthContext";
+import { useOrientation } from "./src/hooks/useOrientation";
+import NavBar, { VideoLink } from "./src/components/NavBar";
+import VideoPlayer from "./src/components/VideoPlayer";
+import ChatBox from "./src/components/ChatBox";
+import Menu from "./src/components/Menu";
+import NewsTicker from "./src/components/NewsTicker";
+import AuthModal from "./src/components/AuthModal";
+import { API_BASE_URL, HLS_BASE } from "./src/config";
+
+// Configure shared package for React Native
+setStorageAdapter({
+  getItem: (key: string) => AsyncStorage.getItem(key),
+  setItem: (key: string, value: string) => AsyncStorage.setItem(key, value),
+  removeItem: (key: string) => AsyncStorage.removeItem(key),
+});
+setApiBaseUrl(API_BASE_URL);
+
+function MainApp() {
+  const orientation = useOrientation();
+  const isLandscape = orientation === "LANDSCAPE";
+  const { setChannelId } = useChatStore();
+
+  const [mobilePanel, setMobilePanel] = useState<"chat" | "pit">("chat");
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [tickerMinimized, setTickerMinimized] = useState(false);
+
+  // Video state
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [videoLinks, setVideoLinks] = useState<VideoLink[]>([
+    { src: `${API_BASE_URL}/videos/Color_Bars_DB_Web.mp4`, channel: "channel-0", channelNumber: 0 },
+  ]);
+
+  // Allow sensor-based orientation (both portrait and landscape)
+  useEffect(() => {
+    ScreenOrientation.unlockAsync();
+  }, []);
+
+  // Fetch channels from API
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/channels`);
+        const channels = await res.json();
+        const dynamic: VideoLink[] = channels
+          .map((ch: any) => {
+            const key = ch.stream_key ?? ch.slug ?? ch.key;
+            if (!key) return null;
+            return {
+              src: `${HLS_BASE}/hls/${key}/index.m3u8`,
+              channel: ch.slug ?? key,
+              channelNumber: ch.channel_number ?? 0,
+              displayName: ch.display_name ?? undefined,
+              tags: ch.tags ?? [],
+            };
+          })
+          .filter(Boolean) as VideoLink[];
+
+        dynamic.sort((a, b) => a.channelNumber - b.channelNumber);
+
+        if (alive) {
+          setVideoLinks((prev) => [prev[0], ...dynamic]);
+        }
+      } catch (e) {
+        console.error("Failed to fetch channels", e);
+      }
+    })();
+    return () => { alive = false; };
+  }, []);
+
+  const goToNextVideo = useCallback(() => {
+    setCurrentIndex((i) => (i + 1) % videoLinks.length);
+  }, [videoLinks.length]);
+
+  const goToPreviousVideo = useCallback(() => {
+    setCurrentIndex((i) => (i - 1 + videoLinks.length) % videoLinks.length);
+  }, [videoLinks.length]);
+
+  const selectChannel = useCallback((index: number) => {
+    setCurrentIndex(index);
+    const link = videoLinks[index];
+    if (link) setChannelId(link.channel);
+  }, [videoLinks, setChannelId]);
+
+  const navigateToChannel = useCallback((slug: string) => {
+    const idx = videoLinks.findIndex((v) => v.channel === slug);
+    if (idx !== -1) selectChannel(idx);
+  }, [videoLinks, selectChannel]);
+
+  // Landscape: fullscreen video only
+  if (isLandscape) {
+    return (
+      <View style={styles.landscapeContainer}>
+        <StatusBar hidden />
+        <VideoPlayer
+          isLandscape={true}
+          currentIndex={currentIndex}
+          setCurrentIndex={setCurrentIndex}
+          videoLinks={videoLinks}
+          onChannelUp={goToNextVideo}
+        />
+      </View>
+    );
+  }
+
+  // Portrait: NavBar + Video + Panel + Ticker
+  return (
+    <SafeAreaView style={styles.portraitContainer} edges={["top"]}>
+      <StatusBar barStyle="light-content" backgroundColor="#0d0d1a" />
+
+      {/* NavBar */}
+      <NavBar
+        currentIndex={currentIndex}
+        videoLinks={videoLinks}
+        onChannelUp={goToNextVideo}
+        onChannelDown={goToPreviousVideo}
+        onSelectChannel={selectChannel}
+        mobilePanel={mobilePanel}
+        setMobilePanel={setMobilePanel}
+        onLoginPress={() => setIsAuthOpen(true)}
+      />
+
+      {/* Video Player */}
+      <VideoPlayer
+        isLandscape={false}
+        currentIndex={currentIndex}
+        setCurrentIndex={setCurrentIndex}
+        videoLinks={videoLinks}
+        onChannelUp={goToNextVideo}
+      />
+
+      {/* Panel: Chat or Pit */}
+      <View style={styles.panelContainer}>
+        {mobilePanel === "chat" ? (
+          <ChatBox />
+        ) : (
+          <Menu onNavigateToChannel={navigateToChannel} />
+        )}
+      </View>
+
+      {/* News Ticker */}
+      <NewsTicker
+        isMinimized={tickerMinimized}
+        onToggle={() => setTickerMinimized((m) => !m)}
+      />
+
+      {/* Auth Modal */}
+      <AuthModal visible={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+    </SafeAreaView>
+  );
+}
+
+export default function App() {
+  return (
+    <SafeAreaProvider>
+      <AuthProvider>
+        <MainApp />
+      </AuthProvider>
+    </SafeAreaProvider>
+  );
+}
+
+const styles = StyleSheet.create({
+  portraitContainer: {
+    flex: 1,
+    backgroundColor: "#0d0d1a",
+  },
+  landscapeContainer: {
+    flex: 1,
+    backgroundColor: "#000",
+  },
+  panelContainer: {
+    flex: 1,
+    overflow: "hidden",
+  },
+});

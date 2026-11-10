@@ -1,0 +1,131 @@
+@use "sass:color";
+@use "../../styles/_variables.scss" as *;
+
+// src/components/Profile/AvatarPicker.scss
+.avatar-picker-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.avatar-picker-modal {
+  background: $background-color-primary;
+  border: 1px solid $border-color-primary;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.avatar-picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid $border-color-primary;
+
+  h3 {
+    margin: 0;
+    color: $text-color-primary;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    color: $text-color-secondary;
+    font-size: 24px;
+    cursor: pointer;
+    &:hover { color: $text-color-primary; }
+  }
+}
+
+.avatar-categories {
+  display: flex;
+  gap: 8px;
+  padding: 16px 20px;
+  border-bottom: 1px solid $border-color-primary;
+  flex-wrap: wrap;
+
+  .category-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid $border-color-primary;
+    background: $background-color-secondary;
+    color: $text-color-primary;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background: color.mix($background-color-secondary, $primary-color, 14%);
+    }
+
+    &.active {
+      background: $primary-color;
+      color: $channel-text-color;
+      border-color: $primary-color;
+    }
+  }
+}
+
+.avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 16px;
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+
+  .avatar-option {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: all 0.2s;
+
+    &:hover {
+      border-color: rgba($primary-color, 0.5);
+      transform: scale(1.05);
+    }
+
+    &.selected {
+      border-color: $primary-color;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .selected-indicator {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: $primary-color;
+      color: $channel-text-color;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+  }
+}
+
+.avatar-picker-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding: 16px 20px;
+  border-top: 1px solid $border-color-primary;
+}

@@ -1,0 +1,395 @@
+.contributions-widget {
+  padding: 1rem;
+  color: #ddd;
+
+  .contrib-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .policy-badge {
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+
+    &.policy-open {
+      background: rgba(70, 200, 120, 0.18);
+      color: #6fe09a;
+    }
+    &.policy-invite {
+      background: rgba(255, 190, 70, 0.18);
+      color: #ffce6b;
+    }
+    &.policy-closed {
+      background: rgba(255, 255, 255, 0.08);
+      color: #aaa;
+    }
+  }
+
+  .contrib-notice {
+    font-size: 0.85rem;
+    color: #a259ff;
+  }
+
+  .contrib-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    &:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    h4 {
+      color: #fff;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    h5 {
+      color: #eee;
+      margin: 0.75rem 0 0.25rem;
+    }
+  }
+
+  .count-badge {
+    background: #a259ff;
+    color: #fff;
+    font-size: 0.72rem;
+    border-radius: 999px;
+    padding: 0.1rem 0.5rem;
+  }
+
+  .empty,
+  .hint {
+    color: #999;
+    font-size: 0.88rem;
+  }
+
+  /* ---------- Owner controls ---------- */
+
+  .policy-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.88rem;
+    max-width: 320px;
+  }
+
+  .roster-add {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+
+    input {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  .roster-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.35rem 0;
+    }
+  }
+
+  .role-chip {
+    font-size: 0.72rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+
+    &.role-contributor {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ccc;
+    }
+    &.role-trusted {
+      background: rgba(162, 89, 255, 0.22);
+      color: #c9a2ff;
+    }
+  }
+
+  /* ---------- Pitch cards ---------- */
+
+  .pitch-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+
+    &.compact .pitch-card {
+      padding: 0.5rem 0.75rem;
+    }
+  }
+
+  .pitch-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+
+    .pitch-main {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+
+      strong {
+        color: #fff;
+      }
+    }
+
+    .pitch-byline {
+      color: #999;
+      font-size: 0.82rem;
+    }
+
+    .pitch-slot {
+      color: #8fc7ff;
+      font-size: 0.82rem;
+    }
+
+    .pitch-text {
+      flex-basis: 100%;
+      margin: 0.4rem 0 0;
+      color: #ccc;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    .rights-note {
+      flex-basis: 100%;
+      color: #6fe09a;
+      font-size: 0.76rem;
+      margin-top: 0.3rem;
+    }
+
+    .review-note {
+      flex-basis: 100%;
+      margin: 0.4rem 0 0;
+      color: #bbb;
+      font-size: 0.85rem;
+      font-style: italic;
+    }
+
+    .pitch-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.6rem;
+    }
+  }
+
+  .status-chip {
+    font-size: 0.72rem;
+    padding: 0.12rem 0.55rem;
+    border-radius: 999px;
+
+    &.status-pending {
+      background: rgba(255, 190, 70, 0.18);
+      color: #ffce6b;
+    }
+    &.status-accepted {
+      background: rgba(70, 200, 120, 0.18);
+      color: #6fe09a;
+    }
+    &.status-declined {
+      background: rgba(255, 90, 90, 0.16);
+      color: #ff8a8a;
+    }
+    &.status-withdrawn {
+      background: rgba(255, 255, 255, 0.08);
+      color: #aaa;
+    }
+  }
+
+  .decline-box {
+    margin-top: 0.6rem;
+
+    textarea {
+      width: 100%;
+    }
+
+    .decline-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      margin-top: 0.4rem;
+    }
+  }
+
+  /* ---------- Pitch form ---------- */
+
+  .pitch-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+
+    .film-mode-row {
+      display: flex;
+      gap: 1.25rem;
+
+      label {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    .new-film-row {
+      display: flex;
+      gap: 0.5rem;
+
+      input {
+        flex: 1;
+        min-width: 0;
+      }
+    }
+
+    .slot-row,
+    .pitch-text-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      font-size: 0.88rem;
+      color: #bbb;
+    }
+
+    .rights-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.55rem;
+      font-size: 0.85rem;
+      color: #ccc;
+      background: rgba(162, 89, 255, 0.08);
+      border: 1px solid rgba(162, 89, 255, 0.25);
+      border-radius: 8px;
+      padding: 0.65rem 0.8rem;
+
+      input {
+        margin-top: 0.2rem;
+      }
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+  }
+
+  /* ---------- Inputs ---------- */
+
+  input[type='text'],
+  input[type='datetime-local'],
+  select,
+  textarea {
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    color: #eee;
+    padding: 0.45rem 0.6rem;
+    font-size: 0.88rem;
+
+    &:focus {
+      outline: none;
+      border-color: #a259ff;
+    }
+  }
+
+  /* ---------- Buttons ---------- */
+
+  .btn-primary,
+  .btn-secondary,
+  .btn-danger {
+    border: none;
+    border-radius: 6px;
+    padding: 0.45rem 0.95rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: #a259ff;
+    color: #fff;
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+  }
+
+  .btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ddd;
+  }
+
+  .btn-danger {
+    background: rgba(255, 90, 90, 0.2);
+    color: #ff8a8a;
+  }
+
+  .linklike {
+    background: none;
+    border: none;
+    color: #a259ff;
+    cursor: pointer;
+    font-size: 0.82rem;
+    padding: 0;
+    text-decoration: underline;
+  }
+
+  /* ---------- Credits ---------- */
+
+  .credits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.4rem 0;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    .credit-name {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .credit-count {
+      color: #999;
+      font-size: 0.82rem;
+    }
+  }
+
+}
+
+.contrib-loading,
+.contrib-error {
+  padding: 1rem;
+  color: #999;
+}

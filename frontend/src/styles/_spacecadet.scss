@@ -1,0 +1,37 @@
+// ── Space Cadet material kit ─────────────────────────────────────────
+// Surfaces for the 3D Pinball Space Cadet treatment — the one piece of
+// that experiment that stuck. The news ticker uses the full LED kit; the
+// nav bar borrows $sc-panel-black so the top and bottom edges of the
+// screen read as the same material.
+//
+// This is a *material* layer, not a colour scheme. The app's palette in
+// _variables.scss still supplies the accent hues — these mixins only
+// change how a surface catches light.
+
+// LED — amber phosphor readouts
+$sc-led-amber: #ffb72f;
+$sc-led-amber-dim: #ff8c1a;
+$sc-led-ghost: rgba(255, 183, 47, 0.07);
+$sc-panel-black: #0b0906;
+
+// The pixel grid that turns glyphs into lit segments. Apply inside a
+// positioned, pointer-events:none pseudo-element over a dark panel.
+@mixin sc-dot-matrix($pitch: 3px, $alpha: 0.55) {
+  background-image:
+    repeating-linear-gradient(to right, rgba(0, 0, 0, $alpha) 0 1px, transparent 1px $pitch),
+    repeating-linear-gradient(to bottom, rgba(0, 0, 0, $alpha) 0 1px, transparent 1px $pitch);
+}
+
+// Amber phosphor text: tight core, wide halo.
+@mixin sc-led-text($size: 22px, $spacing: 0.12em) {
+  font-family: "Courier New", ui-monospace, monospace;
+  font-size: $size;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: $spacing;
+  color: $sc-led-amber;
+  text-shadow:
+    0 0 2px $sc-led-amber,
+    0 0 8px rgba(255, 140, 26, 0.75),
+    0 0 18px rgba(255, 140, 26, 0.35);
+}

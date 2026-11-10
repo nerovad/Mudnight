@@ -1,0 +1,9 @@
+development:
+  adapter: async
+
+test:
+  adapter: test
+
+# LISTEN/NOTIFY over the app's own Postgres; no Redis needed.
+production:
+  adapter: postgresql

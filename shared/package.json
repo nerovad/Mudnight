@@ -1,0 +1,19 @@
+{
+  "name": "@cinezoo/shared",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/types/index.ts",
+    "./api": "./src/api/index.ts",
+    "./stores": "./src/stores/index.ts",
+    "./utils": "./src/utils/index.ts",
+    "./storage": "./src/storage.ts",
+    "./realtime": "./src/realtime/index.ts"
+  },
+  "peerDependencies": {
+    "zustand": ">=5.0.0"
+  }
+}

@@ -1,0 +1,139 @@
+@use "./styles/_variables.scss" as *;
+
+.app-grid {
+  display: grid;
+  grid-template-rows: 60px auto 40px; /* Navbar, Content, Ticker */
+  grid-template-columns: 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: row;
+  height: calc(100vh - 50px);
+
+  &.mobile {
+    flex-direction: column;
+  }
+}
+
+/* Sidebar */
+.trending-container {
+  transition: width 0.3s ease-in-out;
+  width: 70px; /* Default collapsed */
+  background-color: $background-color-primary;
+  overflow-y: auto;
+
+  &.open {
+    width: 250px;
+  }
+}
+
+/* Video Player adjusts based on sidebar */
+.video-container-dboriginals {
+  flex: 1; /* Takes remaining space */
+  transition: margin-left 0.3s ease-in-out, margin-right 0.3s ease-in-out;
+  margin-left: 0; /* No dead space when collapsed */
+  margin-right: 0; /* No dead space when collapsed */
+
+  &.expanded-left {
+    margin-left: $sidebar-width; /* When menu opens */
+    width: calc(100vw - #{$sidebar-width});
+  }
+
+  &.expanded-right {
+    margin-right: $sidebar-width; /* When chatbox opens */
+    width: calc(100vw - #{$sidebar-width});
+  }
+
+  &.expanded-both {
+    margin-left: $sidebar-width;
+    margin-right: $sidebar-width;
+    width: calc(100vw - #{$sidebar-width * 2});
+  }
+}
+
+/* Mobile menu backdrop overlay */
+.menu-backdrop {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    flex-direction: column;
+  }
+
+  .menu-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    top: 50px;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+
+  .video-container-dboriginals {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+  }
+}
+
+/* Mobile landscape: auto-fullscreen (hides all chrome, video fills screen) */
+@media (max-width: 768px) and (orientation: landscape),
+       (orientation: landscape) and (max-height: 500px) {
+  .search-navbar {
+    display: none !important;
+  }
+
+  .news-ticker {
+    display: none !important;
+  }
+
+  .toggle-button-left,
+  .toggle-button-right {
+    display: none !important;
+  }
+
+  .main-content {
+    height: 100vh !important;
+    height: 100dvh !important;
+  }
+
+  .video-container-dboriginals {
+    top: 0 !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+  }
+}
+
+/* Mobile portrait: video on top, panel below */
+.main-content.mobile-portrait {
+  flex-direction: column;
+  position: fixed;
+  top: 50px;
+  bottom: var(--ticker-height, 28px);
+  left: 0;
+  right: 0;
+  height: auto;
+  overflow: hidden;
+
+  .video-container-dboriginals {
+    flex: 0 0 auto;
+    height: 56.25vw; /* 16:9 aspect ratio */
+    max-height: 35dvh;
+    width: 100% !important;
+    margin: 0 !important;
+    min-height: 0;
+  }
+
+  .mobile-panel-container {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+}

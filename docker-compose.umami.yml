@@ -1,0 +1,45 @@
+# Self-hosted Umami, kept in its own compose file so it can be brought up and
+# down without touching the Cinezoo stack.
+#
+#   openssl rand -base64 32          # put the output in UMAMI_APP_SECRET
+#   docker compose -f docker-compose.umami.yml up -d
+#
+# Umami binds to 127.0.0.1 only — put it behind the same reverse proxy that
+# terminates TLS for cinezoo.tv (see docs/analytics.md) rather than exposing
+# port 3000 to the internet.
+#
+# Default login after first boot is admin / umami. Change it immediately.
+
+services:
+  umami:
+    image: ghcr.io/umami-software/umami:postgresql-latest
+    container_name: umami
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      DATABASE_TYPE: postgresql
+      DATABASE_URL: postgresql://umami:${UMAMI_DB_PASSWORD:?set UMAMI_DB_PASSWORD}@umami-db:5432/umami
+      APP_SECRET: ${UMAMI_APP_SECRET:?set UMAMI_APP_SECRET}
+    depends_on:
+      umami-db:
+        condition: service_healthy
+
+  umami-db:
+    image: postgres:15-alpine
+    container_name: umami-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: umami
+      POSTGRES_USER: umami
+      POSTGRES_PASSWORD: ${UMAMI_DB_PASSWORD:?set UMAMI_DB_PASSWORD}
+    volumes:
+      - umami-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U umami -d umami"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  umami-db-data:

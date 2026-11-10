@@ -1,0 +1,32 @@
+.admin-sessionControls {
+  background: #111; color: #eee; border: 1px solid #333; border-radius: 8px;
+  padding: 1rem; margin: 0 0 1rem;
+
+  &__title { margin: 0 0 .75rem; }
+  &__subtitle { margin: 1rem 0 .5rem; }
+
+  &__actions {
+    display: flex; flex-direction: column; gap: .5rem; margin: .5rem 0 .75rem;
+
+    button {
+      padding: .6rem; border: 0; border-radius: 4px; font-weight: 700;
+      background: #2f2f2f; color: #eee; cursor: pointer;
+      &:hover { background: #3a3a3a; }
+    }
+  }
+
+  &__status { margin: .25rem 0 .75rem; opacity: .9; }
+
+  &__table {
+    width: 100%; border-collapse: collapse; background: #151515; border: 1px solid #333; border-radius: 6px; overflow: hidden;
+
+    th, td { padding: .5rem; border-bottom: 1px solid #2a2a2a; text-align: left; }
+    th { background: #1c1c1c; }
+  }
+
+  &__refresh {
+    margin-top: .75rem; padding: .6rem .9rem; border: 0; border-radius: 4px; font-weight: 700;
+    background: #2f2f2f; color: #eee; cursor: pointer;
+    &:hover { background: #3a3a3a; }
+  }
+}

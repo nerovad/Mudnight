@@ -1,0 +1,133 @@
+@use "sass:color";
+@use "../../styles/_variables.scss" as *;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+.floating-remote {
+  position: fixed;
+  top: 487px;
+  right: 820px;
+  width: 150px;
+  padding: 20px;
+  background: linear-gradient(to bottom, $input-bg-color, color.adjust($input-bg-color, $lightness: -10%)); 
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0px 0px 10px rgba($primary-color-red, 0.6);
+  border: 2px solid $input-border-color; 
+  z-index: 10005;
+  pointer-events: auto;
+  font-family: $primary-font-family;
+  color: white;
+  text-align: center;
+
+&::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        rgba(234, 166, 18, 0.08) 0px,
+        rgba(234, 166, 18, 0.02) 3px
+      ); // Subtle scanline effect using yellow
+      pointer-events: none;
+    }
+}
+
+/* Buttons - Modern Neon Glow */
+.channel-up, .channel-down, .mute-btn, .fullscreen-btn {
+  width: 110px;
+  height: 42px;
+  border-radius: 8px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  background: black;
+  box-shadow: 0px 0px 10px rgba($primary-color-red, 0.5);
+  color: white;
+  font-family: inherit;
+  letter-spacing: 0.5px;
+  text-shadow: 0px 0px 8px rgba($primary-color-red, 0.8);
+
+  &:hover {
+    background: rgba($primary-color-red, 0.2);
+    box-shadow: 0px 0px 18px rgba($primary-color-red, 1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+/* Power Button */
+.close-btn-remote {
+  background: $input-bg-color;
+  box-shadow: 0px 0px 10px rgba($primary-color-red-hover, 0.2);
+  width: 50%;
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 80px;
+  margin-top: -5px;
+  margin-bottom: 5%;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+  border: none;
+  color: white;
+  z-index: 1000;
+
+  &:hover {
+  background: $primary-color-yellow-hover;
+
+  }
+}
+
+/* Channel Buttons */
+.channel-up, {
+  background: linear-gradient(to bottom, $primary-color-red, color.adjust($primary-color-red, $lightness: -10%));
+  box-shadow: 0px 0px 10px rgba($primary-color-red, 0.8);
+}
+
+.channel-up:hover, {
+  background: linear-gradient(to bottom, $primary-color-red, color.adjust($primary-color-red, $lightness: -20%));
+  box-shadow: 0px 0px 18px rgba($primary-color-red, 1);
+}
+
+.channel-down {
+  background: linear-gradient(to bottom, $primary-color-alabaster, color.adjust($primary-color-alabaster, $lightness: -10%));
+  box-shadow: 0px 0px 10px rgba($primary-color-alabaster, 0.8);
+}
+
+.channel-down:hover {
+  background: linear-gradient(to bottom, $primary-color-alabaster, color.adjust($primary-color-alabaster, $lightness: -20%));
+  box-shadow: 0px 0px 18px rgba($primary-color-alabaster, 1);
+}
+
+/* Mute Button */
+.mute-btn {
+  background: linear-gradient(to bottom, $primary-color-yellow, color.adjust($primary-color-yellow, $lightness: -10%));
+  box-shadow: 0px 0px 10px rgba($primary-color-yellow, 0.8);
+}
+
+.mute-btn:hover {
+  background: linear-gradient(to bottom, $primary-color-yellow, color.adjust($primary-color-yellow, $lightness: -20%));
+  box-shadow: 0px 0px 18px rgba($primary-color-yellow, 1);
+}
+
+/* Fullscreen Button */
+.fullscreen-btn {
+  background: linear-gradient(to bottom, $primary-color-charcoal, color.adjust($primary-color-charcoal, $lightness: -10%));
+  box-shadow: 0px 0px 10px rgba($primary-color-charcoal, 0.8);
+}
+
+.fullscreen-btn:hover {
+  background: linear-gradient(to bottom, $primary-color-charcoal, color.adjust($primary-color-charcoal, $lightness: -20%));
+  box-shadow: 0px 0px 18px rgba($primary-color-charcoal, 1);
+}

@@ -1,0 +1,50 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Cinezoo Phase 1 — watch the edge</title>
+<style>
+  body { background:#111; color:#eee; font-family:system-ui,sans-serif; margin:0; padding:24px; }
+  video { width:100%; max-width:960px; background:#000; border-radius:8px; }
+  input { width:100%; max-width:960px; padding:8px; margin:8px 0; font-size:14px;
+          background:#222; color:#eee; border:1px solid #444; border-radius:6px; }
+  .hint { color:#888; font-size:13px; max-width:960px; }
+  code { color:#7cd; }
+</style>
+<h2>Cinezoo Phase 1 — the tower's output</h2>
+<p class="hint">This is exactly what a viewer sees: HLS pulled from the edge, the
+same URL shape <code>VideoPlayer.tsx</code> builds in production
+(<code>/hls/&lt;stream_key&gt;/index.m3u8</code>). If ffplayout is pushing and
+nginx-rtmp is segmenting, it plays here.</p>
+
+<input id="src" value="http://localhost:8088/hls/phase1-demo-key/index.m3u8">
+<video id="v" controls autoplay muted playsinline></video>
+<p class="hint" id="status">loading hls.js…</p>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
+<script>
+  const v = document.getElementById('v');
+  const status = document.getElementById('status');
+  const srcInput = document.getElementById('src');
+
+  function load(src) {
+    status.textContent = 'connecting to ' + src;
+    if (window.Hls && Hls.isSupported()) {
+      const hls = new Hls({ liveSyncDurationCount: 3 });
+      hls.loadSource(src);
+      hls.attachMedia(v);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        status.textContent = 'playing — segment changes = clip changes in the playlist';
+        v.play().catch(() => {});
+      });
+      hls.on(Hls.Events.ERROR, (_e, d) => {
+        if (d.fatal) status.textContent =
+          'error: ' + d.type + ' / ' + d.details +
+          ' — is ffplayout pushing and the playlist for today present?';
+      });
+    } else if (v.canPlayType('application/vnd.apple.mpegurl')) {
+      v.src = src;                       // Safari native HLS
+    }
+  }
+
+  srcInput.addEventListener('change', () => load(srcInput.value));
+  load(srcInput.value);
+</script>

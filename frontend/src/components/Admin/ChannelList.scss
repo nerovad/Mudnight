@@ -1,0 +1,15 @@
+.admin-channelList {
+  background: #111; color: #eee; border: 1px solid #333; border-radius: 8px;
+  padding: 1rem; margin: 0 0 1rem;
+
+  &__title { margin: 0 0 .75rem; }
+  &__empty { opacity: .8; }
+
+  &__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .5rem; }
+
+  &__button {
+    width: 100%; text-align: left; padding: .6rem .7rem; border-radius: 4px; border: 1px solid #444;
+    background: #1b1b1b; color: #eee; cursor: pointer;
+    &:hover { background: #242424; }
+  }
+}

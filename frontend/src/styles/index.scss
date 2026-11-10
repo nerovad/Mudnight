@@ -1,0 +1,62 @@
+// Import Global Variables and Mixins
+@use "./_variables.scss" as *;
+@use "./_mixins.scss" as *;
+
+// Import Component Styles
+@use "../components/Navigation/Navigation.scss" as *;
+@use "../components/NewsTicker/NewsTicker.scss" as *;
+@use "../components/VideoPlayer/VideoPlayer.scss" as *;
+
+//  Base Resets and Utilities
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--primary-font, Arial, sans-serif);
+  background-color: var(--background-color, #000);
+  color: var(--text-color, #fff);
+  line-height: 1.5;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: var(--primary-color, #c1272d);
+}
+
+//  Global Utility Classes
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid-layout {
+  display: grid;
+  gap: 1rem;
+}
+
+//  Animations
+@keyframes scroll {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+

@@ -1,0 +1,22 @@
+$primary-font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+// 🌌 Backgrounds — smooth, rich, deep
+$background-color-primary: #0e0a1e;        // deep space purple-black
+$background-color-secondary: #2a2342;      // rich desaturated violet — clean, cool
+$border-color-primary: #1f1b2e;            // slightly lighter — subtle panel lines
+
+// 🔮 Accents — Neon Triad
+$primary-color: #a259ff;                  // arcane purple — hero actions
+$secondary-color: #3aff78;                // neon jungle green — success, active states
+$accent-secondary-color: #ff7b00;         // blazing orange — alerts, hover, emphasis
+
+// ✍️ Text — clean and intentional
+$text-color-primary: #e5e5e5;              // soft white-gray — general body copy
+$text-color-secondary: #b9b9d0;            // muted lilac-gray — secondary UI
+$channel-text-color: #ffffff;              // pure white — overlays & top-level info
+
+// 📐 Layout — the desktop side panels (The Pit on the left, Live Chat on the
+// right). One value drives the panel width, the margin the video box gives up
+// to each, and where the collapse arrows park. Mobile drawers size separately.
+$sidebar-width: 340px;
+$sidebar-toggle-inset: 30px;               // arrow's distance inside the open panel edge
