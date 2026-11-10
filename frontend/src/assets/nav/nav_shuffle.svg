@@ -1,10 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" stroke="url(#midnight)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-  <defs>
-    <linearGradient id="midnight" gradientUnits="userSpaceOnUse" x1="0" y1="3" x2="0" y2="29">
-      <stop offset="0" stop-color="#b3a1ff"/>
-      <stop offset="1" stop-color="#8065e8"/>
-    </linearGradient>
-  </defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" stroke="#a259ff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
   <path d="M3 9 H8 c3 0 4.5 2 6.5 7 s3.5 7 6.5 7 H25"/>
   <path d="M3 23 H8 c3 0 4.5 -2 6.5 -7 s3.5 -7 6.5 -7 H25"/>
   <path d="M24.5 5 L28.5 9 L24.5 13"/>

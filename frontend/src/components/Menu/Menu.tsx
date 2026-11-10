@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useCallback, useRef } from "react";
+import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import io from "@cinezoo/shared/realtime";
 import "./Menu.scss";
@@ -10,10 +10,9 @@ import TournamentBracket from "./TournamentBracket";
 import AboutWidget from "./AboutWidget";
 import NowPlayingWidget from "./NowPlayingWidget";
 import ContributionsWidget from "./ContributionsWidget";
-
-// Lava lamp blobs — each index maps to a .lava-blob--N size/position/tempo
-// variant in Menu.scss
-const LAVA_BLOBS = [1, 2, 3, 4, 5, 6] as const;
+import PluginSlot from "../../plugins/PluginSlot";
+import PluginsPanel from "../../plugins/PluginsPanel/PluginsPanel";
+import { usePluginRuntime } from "../../plugins/usePluginStore";
 
 /* === VIEWER COUNT FORMATTING === */
 // <100: exact number (single digits e.g. 1, 23, 99)
@@ -49,7 +48,7 @@ interface UtilitiesProps {
 }
 
 /* === TYPES === */
-type ModalKind = null | "ballot" | "battle" | "bracket" | "leaderboard" | "about" | "now_playing" | "contributions";
+type ModalKind = null | "ballot" | "battle" | "bracket" | "leaderboard" | "about" | "now_playing" | "contributions" | "plugins";
 
 type Film = {
   id: string;
@@ -308,6 +307,9 @@ const Utilities: React.FC<UtilitiesProps> = ({ isOpen, setIsOpen, isMobile = fal
   const [savedChannels, setSavedChannels] = useState<{ slug: string; name: string }[]>([]);
   const [savingChannel, setSavingChannel] = useState(false);
 
+  // Plugins: the channel's config, the viewer's overrides, uploaded code
+  usePluginRuntime(token, channelId || null);
+
   const isCurrentChannelSaved = savedChannels.some((ch) => ch.slug === channelId);
 
   // Fetch saved channels
@@ -489,24 +491,6 @@ const Utilities: React.FC<UtilitiesProps> = ({ isOpen, setIsOpen, isMobile = fal
     return () => { on = false; };
   }, [channelId]);
 
-  // Drop each blob at a random point in its own cycle the first time the
-  // sidebar opens, so the lamp never looks like it just started up. Runs
-  // once — re-rolling on every open would visibly teleport the wax.
-  const lavaSeeded = useRef(false);
-  useEffect(() => {
-    if (!isOpen || lavaSeeded.current) return;
-
-    const blobs = document.querySelectorAll<HTMLElement>('.lava-blob');
-    if (!blobs.length) return;
-
-    blobs.forEach((blob) => {
-      // A negative delay starts the animation already in progress
-      const duration = parseFloat(getComputedStyle(blob).animationDuration) || 24;
-      blob.style.setProperty('--delay', `${-Math.random() * duration}s`);
-    });
-    lavaSeeded.current = true;
-  }, [isOpen]);
-
   const currentFilm: Film | null = films.length ? films[idx % films.length] : null;
   const [view, setView] = useState<"single" | "grid">("single");
 
@@ -587,33 +571,8 @@ const Utilities: React.FC<UtilitiesProps> = ({ isOpen, setIsOpen, isMobile = fal
       )}
 
       <div className={`utilities-container ${isOpen ? "open" : ""} ${isMobile ? "mobile" : ""} ${mobileInline ? "mobile-inline" : ""}`}>
-        <div className="lava-lamp-bg" aria-hidden="true">
-          {/* Goo filter: blur, then crush the alpha ramp back to a hard edge.
-              Blobs that overlap after blurring fuse into one silhouette, which
-              is what gives the wax its surface tension. */}
-          <svg className="lava-defs" aria-hidden="true" focusable="false">
-            <defs>
-              <filter id="lava-goo">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur" />
-                <feColorMatrix
-                  in="blur"
-                  mode="matrix"
-                  values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 24 -10"
-                />
-              </filter>
-            </defs>
-          </svg>
-
-          <div className="lava-glow" />
-
-          <div className="lava-goo">
-            <div className="lava-pool" />
-            <div className="lava-cap" />
-            {LAVA_BLOBS.map((n) => (
-              <div key={n} className={`lava-blob lava-blob--${n}`} />
-            ))}
-          </div>
-        </div>
+        {/* Themes → Sidebar background (the lava lamp by default) */}
+        <PluginSlot slot="sidebar.background" active={isOpen} />
 
         <div className={`utilities-menu ${isOpen ? "open" : ""}`}>
           {/* Mobile close button — only in sidebar mode, not inline */}
@@ -623,6 +582,9 @@ const Utilities: React.FC<UtilitiesProps> = ({ isOpen, setIsOpen, isMobile = fal
             </button>
           )}
           <h3>The Pit</h3>
+          <button className="plugins-button" onClick={() => setActiveModal("plugins")}>
+            <span aria-hidden="true">🧩</span> Plugins
+          </button>
           <ul>
             {utilities.map((u) => (
               <li
@@ -637,6 +599,9 @@ const Utilities: React.FC<UtilitiesProps> = ({ isOpen, setIsOpen, isMobile = fal
               </li>
             ))}
           </ul>
+
+          {/* Plugins added by the channel or the viewer */}
+          <PluginSlot slot="sidebar.section" active={isOpen} />
 
           {/* Trending Channels */}
           {trending.length > 0 && (
@@ -825,6 +790,16 @@ const Utilities: React.FC<UtilitiesProps> = ({ isOpen, setIsOpen, isMobile = fal
         width={780}
       >
         <NowPlayingWidget channelId={channelId || ""} />
+      </Modal>
+
+      {/* Plugins */}
+      <Modal
+        isOpen={activeModal === "plugins"}
+        onClose={() => setActiveModal(null)}
+        title="🧩 Plugins"
+        width={880}
+      >
+        <PluginsPanel />
       </Modal>
 
       {/* Contributions Widget Modal */}

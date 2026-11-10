@@ -1,12 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" stroke="url(#midnight)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-  <defs>
-    <linearGradient id="midnight" gradientUnits="userSpaceOnUse" x1="0" y1="3" x2="0" y2="29">
-      <stop offset="0" stop-color="#b3a1ff"/>
-      <stop offset="1" stop-color="#8065e8"/>
-    </linearGradient>
-  </defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" stroke="#a259ff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
   <path d="M11.5 7 L16 3 M20.5 7 L16 3"/>
   <rect x="3" y="7" width="26" height="22" rx="3.5"/>
   <path d="M13.5 13 H24.5 M13.5 18 H24.5 M13.5 23 H24.5"/>
-  <path d="M8.6 13 h.01 M8.6 18 h.01 M8.6 23 h.01" stroke-width="3.4"/>
+  <path d="M8.6 13 h.01 M8.6 18 h.01 M8.6 23 h.01" stroke-width="4"/>
 </svg>
