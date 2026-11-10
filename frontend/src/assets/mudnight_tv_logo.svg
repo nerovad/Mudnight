@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 300">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 300">
   <defs>
     <!-- Crescent: outer circle (150,140) r105 minus inner circle (195,110) r90.
          Tips land where the two circles intersect. -->
@@ -41,9 +41,12 @@
     <use href="#word" stroke="#ff7b00" stroke-width="22" transform="translate(5,6)"/>
     <use href="#word" stroke="#a259ff" stroke-width="22"/>
 
-    <!-- rule + TV -->
-    <path d="M 296 220 H 812" stroke="#ff7b00" stroke-width="8"/>
-    <path d="M 840 190 H 882 M 861 190 V 250 M 900 190 L 921 250 L 942 190"
-          stroke="#ff7b00" stroke-width="18"/>
+    <!-- TV tag, tilted up off the end of the word with the colours swapped -->
+    <g transform="translate(998,80) rotate(-12)">
+      <path d="M 0 0 H 50 M 25 0 V 100 M 74 0 L 98 100 L 122 0"
+            stroke="#a259ff" stroke-width="24" transform="translate(5,6)"/>
+      <path d="M 0 0 H 50 M 25 0 V 100 M 74 0 L 98 100 L 122 0"
+            stroke="#ff7b00" stroke-width="24"/>
+    </g>
   </g>
 </svg>

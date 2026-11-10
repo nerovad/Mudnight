@@ -1,6 +1,10 @@
 @use "../../styles/_variables.scss" as *;
 @use "../../styles/_spacecadet.scss" as *;
 
+// Violet halo behind the nav icons on hover — matches the icons' midnight
+// violet gradient.
+$nav-icon-glow: #9a82ff;
+
 .search-navbar {
   position: fixed;
   display: flex;
@@ -22,7 +26,7 @@
 
     .search-navbar__logo {
       height: auto;
-      width: 140px;
+      width: 169px; // keeps the old 140px logo height with the wider viewBox
       margin-top: 7px;
       margin-left: 7px;
       transition: transform 0.2s ease-in-out;
@@ -211,8 +215,8 @@
 
     &:hover {
       transform: scale(1.2);
-      background: rgba(#af63ff, 0.1);
-      filter: drop-shadow(0 0 6px #af63ff) drop-shadow(0 0 12px rgba(#af63ff, 0.3));
+      background: rgba($nav-icon-glow, 0.1);
+      filter: drop-shadow(0 0 6px $nav-icon-glow) drop-shadow(0 0 12px rgba($nav-icon-glow, 0.3));
     }
 
     &:active {
@@ -242,8 +246,8 @@
 
     &:hover {
       transform: scale(1.2);
-      background: rgba(#af63ff, 0.1);
-      filter: drop-shadow(0 0 6px #af63ff) drop-shadow(0 0 12px rgba(#af63ff, 0.3));
+      background: rgba($nav-icon-glow, 0.1);
+      filter: drop-shadow(0 0 6px $nav-icon-glow) drop-shadow(0 0 12px rgba($nav-icon-glow, 0.3));
     }
 
     &:active {
@@ -339,8 +343,8 @@
 
     &:hover {
       transform: scale(1.2);
-      background: rgba(#af63ff, 0.1);
-      filter: drop-shadow(0 0 6px #af63ff) drop-shadow(0 0 12px rgba(#af63ff, 0.3));
+      background: rgba($nav-icon-glow, 0.1);
+      filter: drop-shadow(0 0 6px $nav-icon-glow) drop-shadow(0 0 12px rgba($nav-icon-glow, 0.3));
     }
 
     &:active {
