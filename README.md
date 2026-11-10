@@ -57,17 +57,27 @@ npm install                      # frontend, mobile, shared
 (cd backend && bin/rails db:prepare)   # new DB: loads db/structure.sql; existing DB: runs pending migrations
 ```
 
-Dev (backend, port 4000 by default, from `PORT`):
+### Running in development
+
+Run the backend and frontend in two terminals.
+
+**Terminal 1: backend (Rails, http://localhost:4000)**
 
 ```sh
-npm run dev:backend              # = cd backend && bin/rails server
+cd backend
+bin/rails server
 ```
 
-Dev (frontend, proxies /api, /uploads and /cable to the backend):
+**Terminal 2: frontend (Vite, http://localhost:5173)**
 
 ```sh
-npm run dev:frontend
+cd frontend
+npm run dev
 ```
+
+Open http://localhost:5173. Vite forwards `/api`, `/uploads` and `/cable` to Rails on port 4000, so keep the backend running.
+
+If Rails says `Address already in use ... port 4000`, another server is still running. Find it with `ss -ltnp | grep 4000` and stop it.
 
 Prod: `./deploy.sh`. PM2 runs Puma (`ecosystem.config.js`) and is configured to auto-start on reboot via systemd.
 Production needs `backend/config/master.key` (or `SECRET_KEY_BASE`) on the server.
