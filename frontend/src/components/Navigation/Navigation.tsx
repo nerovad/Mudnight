@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
-import Logo from "../../assets/cinezoo_logo_redpanda.svg";
+import Logo from "../../assets/mudnight_tv_logo.svg";
 import "./Navigation.scss";
 import ArrowUp from "../../assets/nav/nav_arrow_up.svg"
 import ArrowDown from "../../assets/nav/nav_arrow_down.svg"
@@ -374,7 +374,7 @@ const SearchNavBar: React.FC<NavBarProps> = ({
       {!isMobile && (
         <div className="search-navbar__left">
           <a href="/">
-            <img src={Logo} alt="Cinezoo" className="search-navbar__logo" />
+            <img src={Logo} alt="Mudnight TV" className="search-navbar__logo" />
           </a>
 
           <div className="control-pill search-navbar__controls">
