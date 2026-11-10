@@ -15,7 +15,7 @@ type TickerSegment = {
 /** Shown if the API is unreachable, so a backend blip never leaves the strip
  *  blank. Deliberately evergreen — nothing dated, nothing that can go stale. */
 const FALLBACK_SEGMENTS: TickerSegment[] = [
-  { id: -1, kind: "editorial", body: "Welcome to CineZoo!", sponsorName: null, linkUrl: null },
+  { id: -1, kind: "editorial", body: "Welcome to Mudnight TV!", sponsorName: null, linkUrl: null },
   {
     id: -2,
     kind: "editorial",
