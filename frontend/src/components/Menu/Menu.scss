@@ -2,13 +2,6 @@
 @use "../../styles/_variables.scss" as *;
 @use "../../styles/_spacecadet.scss" as *;
 
-// Lava lamp wax shades derived from $primary-color: #a259ff
-// These are opaque on purpose — the goo filter needs solid alpha to merge
-// blobs, so translucency is applied once on the .lava-goo layer instead.
-$lava-core: color.adjust($primary-color, $lightness: 20%);                       // hot highlight
-$lava-body: $primary-color;                                                      // wax body
-$lava-shade: color.adjust($primary-color, $lightness: -24%, $saturation: -10%);  // cooled underside
-
 /* ===== YOUR ORIGINAL SIDEBAR STYLES (unchanged) ===== */
 .utilities-container {
   position: fixed;
@@ -150,13 +143,13 @@ $lava-shade: color.adjust($primary-color, $lightness: -24%, $saturation: -10%); 
 .utilities-menu {
   font-family: inherit;
   padding: 0rem 1rem;
-  background-color: transparent; // Changed from solid to transparent so lavalamp shows through
+  background-color: transparent; // So the sidebar.background plugin shows through
   color: white;
   opacity: 0;
   transform: translateX(-10px);
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
   position: relative;
-  z-index: 2; // Above lava lamp (z-index: 0)
+  z-index: 2; // Above the sidebar.background plugin slot (z-index: 0)
 
   &.open {
     display: flex;
@@ -174,6 +167,32 @@ $lava-shade: color.adjust($primary-color, $lightness: -24%, $saturation: -10%); 
     text-align: center;
     // Wax passing behind must never fight the lettering
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+  }
+
+  // Always shown, whatever the channel has configured
+  .plugins-button {
+    align-self: center;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: -0.25rem 0 1rem;
+    padding: 6px 14px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: $channel-text-color;
+    background: rgba($background-color-primary, 0.86);
+    border: 1px solid rgba($primary-color, 0.6);
+    border-radius: 999px;
+    backdrop-filter: blur(6px);
+    cursor: pointer;
+    transition: background 0.2s ease-in-out, border-color 0.2s ease-in-out;
+
+    &:hover,
+    &:focus-visible {
+      background: rgba($primary-color, 0.35);
+      border-color: $primary-color;
+    }
   }
 
   ul {
@@ -220,133 +239,6 @@ $lava-shade: color.adjust($primary-color, $lightness: -24%, $saturation: -10%); 
   }
 }
 
-/* ===== LAVA LAMP BACKGROUND ===== */
-.lava-lamp-bg {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none; // Clicks pass through
-  // Bottom-most layer of the sidebar. It cannot go negative — the container's
-  // own background is opaque and would swallow it — so 0 is "last", and every
-  // content layer above sets an explicit positive z-index.
-  z-index: 0;
-  isolation: isolate; // Filters/will-change inside can't escape this layer
-  opacity: 0; // Hidden when collapsed
-  transition: opacity 0.5s ease-in-out;
-
-  // Show when sidebar is open
-  .utilities-container.open & {
-    opacity: 1;
-  }
-}
-
-// The SVG <filter> lives in the DOM but must never take up space
-.lava-defs {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-}
-
-// Warm backlight from the "bulb" under the wax pool
-.lava-glow {
-  position: absolute;
-  left: 50%;
-  bottom: -20%;
-  width: 200%;
-  height: 60%;
-  transform: translateX(-50%);
-  background: radial-gradient(
-    ellipse at 50% 100%,
-    rgba($lava-core, 0.5) 0%,
-    rgba($lava-body, 0.2) 38%,
-    transparent 72%
-  );
-  filter: blur(20px);
-  animation: lava-bulb 8s ease-in-out infinite;
-}
-
-// Metaball layer: opaque children + goo filter = blobs that merge and
-// pinch apart with surface tension. Translucency is applied here, once,
-// after the filter has run.
-.lava-goo {
-  position: absolute;
-  inset: 0;
-  filter: url(#lava-goo) blur(2px);
-  opacity: 0.42;
-}
-
-// Molten wax reservoir sitting on the bulb — blobs pinch off from and
-// melt back into this
-.lava-pool {
-  position: absolute;
-  left: -14%;
-  bottom: -16%;
-  width: 128%;
-  height: 30%;
-  border-radius: 50% 50% 0 0 / 46% 46% 0 0;
-  background: linear-gradient(to top, $lava-shade 0%, $lava-body 62%, $lava-core 100%);
-  transform-origin: 50% 100%;
-  animation: lava-pool-swell 9s ease-in-out infinite;
-}
-
-// Cooled wax collecting against the ceiling — risen blobs merge into it
-.lava-cap {
-  position: absolute;
-  left: -14%;
-  top: -20%;
-  width: 128%;
-  height: 22%;
-  border-radius: 0 0 50% 50% / 0 0 44% 44%;
-  background: linear-gradient(to bottom, $lava-shade 0%, $lava-body 78%);
-  transform-origin: 50% 0;
-  animation: lava-cap-swell 13s ease-in-out infinite;
-}
-
-// Each blob is a full-height "lane" so its rise can be expressed as a
-// percentage of the lamp, not of its own diameter
-.lava-blob {
-  position: absolute;
-  bottom: 0;
-  left: var(--x, 20%);
-  width: min(var(--size, 55%), 180px);
-  height: 100%;
-  animation: lava-rise var(--dur, 24s) ease-in-out infinite;
-  animation-delay: var(--delay, 0s);
-  will-change: transform;
-
-  // The wax itself — squashes, sways and wobbles independently of the rise
-  &::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    aspect-ratio: 1;
-    background: radial-gradient(
-      circle at 34% 28%,
-      $lava-core 0%,
-      $lava-body 54%,
-      $lava-shade 100%
-    );
-    border-radius: 50%;
-    animation:
-      lava-sway var(--sway, 13s) ease-in-out infinite,
-      lava-morph var(--morph, 11s) ease-in-out infinite;
-    animation-delay: var(--delay, 0s);
-    will-change: transform, border-radius;
-  }
-
-  // Staggered so no two blobs share a rhythm — a lamp where everything
-  // moves in step reads as an animation, not as convection. Durations are
-  // deliberately non-harmonic so the pattern takes minutes to repeat.
-  &--1 { --x: 6%;  --size: 62%; --dur: 26s; --sway: 14s; --morph: 11s; }
-  &--2 { --x: 44%; --size: 44%; --dur: 34s; --sway: 17s; --morph: 13s; }
-  &--3 { --x: 24%; --size: 72%; --dur: 41s; --sway: 21s; --morph: 16s; }
-  &--4 { --x: 62%; --size: 34%; --dur: 22s; --sway: 11s; --morph: 9s;  }
-  &--5 { --x: -4%; --size: 38%; --dur: 30s; --sway: 15s; --morph: 12s; }
-  &--6 { --x: 70%; --size: 22%; --dur: 18s; --sway: 9s;  --morph: 7s;  }
-}
 
 /* ===== MODAL (centered, blurred backdrop) ===== */
 .modal-backdrop {
@@ -561,25 +453,8 @@ $lava-shade: color.adjust($primary-color, $lightness: -24%, $saturation: -10%); 
 @media (prefers-reduced-motion: reduce) {
   .modal-backdrop { backdrop-filter: none; }
   .star { transition: none; }
-
-  // Freeze the lamp: blobs hold a scattered mid-cycle pose instead of moving
-  .lava-glow,
-  .lava-pool,
-  .lava-cap,
-  .lava-blob,
-  .lava-blob::before {
-    animation: none !important;
-  }
-
-  .lava-blob {
-    &--1 { transform: translateY(-30%); }
-    &--2 { transform: translateY(-62%); }
-    &--3 { transform: translateY(-8%); }
-    &--4 { transform: translateY(-70%); }
-    &--5 { transform: translateY(-44%); }
-    &--6 { transform: translateY(-20%); }
-  }
 }
+
 .ballot-wrap {
   display: flex;
   flex-direction: column;
@@ -890,51 +765,3 @@ $lava-shade: color.adjust($primary-color, $lightness: -24%, $saturation: -10%); 
   }
 }
 
-/* ===== LAVA LAMP ANIMATIONS ===== */
-
-// The convection cycle: sit in the pool reheating, tear away and rise,
-// dwell at the ceiling while cooling, then sink back and remerge.
-// The long flat holds at 0% and 100% are what sell it — real wax spends
-// most of its time waiting, not travelling.
-@keyframes lava-rise {
-  0%,  10% { transform: translateY(6%); }    // pooled, absorbing heat
-  20%      { transform: translateY(-4%); }   // necks up out of the pool
-  46%      { transform: translateY(-72%); }  // ascent
-  56%      { transform: translateY(-78%); }  // dwells against the cap
-  90%, 100% { transform: translateY(6%); }   // sinks back and remerges
-}
-
-// Sideways drift plus squash-and-stretch: stretched thin while climbing,
-// flattened where it meets the ceiling, spread wide in the pool
-@keyframes lava-sway {
-  0%   { transform: translateX(0)   scale(1.04, 0.9); }
-  28%  { transform: translateX(9%)  scale(0.93, 1.12); }
-  55%  { transform: translateX(-7%) scale(1.08, 0.88); }
-  80%  { transform: translateX(4%)  scale(0.97, 1.05); }
-  100% { transform: translateX(0)   scale(1.04, 0.9); }
-}
-
-// Slow asymmetric wobble so the silhouette is never a clean circle
-@keyframes lava-morph {
-  0%, 100% { border-radius: 46% 54% 58% 42% / 52% 48% 52% 48%; }
-  33%      { border-radius: 58% 42% 44% 56% / 42% 58% 44% 56%; }
-  66%      { border-radius: 42% 58% 52% 48% / 58% 42% 56% 44%; }
-}
-
-// Reservoir breathing as it heats
-@keyframes lava-pool-swell {
-  0%, 100% { transform: scaleY(1)    translateX(0); }
-  50%      { transform: scaleY(1.14) translateX(-3%); }
-}
-
-// Cooled wax at the ceiling shifting as blobs merge into it
-@keyframes lava-cap-swell {
-  0%, 100% { transform: scaleY(1)    translateX(0); }
-  50%      { transform: scaleY(1.22) translateX(4%); }
-}
-
-// Bulb flicker
-@keyframes lava-bulb {
-  0%, 100% { opacity: 0.85; transform: translateX(-50%) scaleY(1); }
-  50%      { opacity: 1;    transform: translateX(-50%) scaleY(1.1); }
-}

@@ -1,0 +1,344 @@
+@use "../../styles/_variables.scss" as *;
+
+.plugins-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: $primary-font-family;
+  color: $text-color-primary;
+
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  h4 {
+    margin: 8px 0 4px;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $text-color-secondary;
+  }
+
+  h5 {
+    margin: 0;
+    font-size: 1rem;
+    color: $primary-color;
+  }
+
+  code {
+    font-size: 0.85em;
+    color: $secondary-color;
+  }
+
+  button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .btn-ghost {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    color: $channel-text-color;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  select,
+  input[type="text"],
+  textarea {
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: $text-color-primary;
+    background: rgba($background-color-primary, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 6px 8px;
+  }
+}
+
+.plugins-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  button {
+    font-family: inherit;
+    font-size: 0.9rem;
+    padding: 8px 12px;
+    background: none;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    color: $text-color-secondary;
+    cursor: pointer;
+
+    &.on {
+      color: $channel-text-color;
+      border-bottom-color: $primary-color;
+    }
+  }
+}
+
+.plugins-scope {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: $text-color-secondary;
+
+  button {
+    font-family: inherit;
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    color: $text-color-primary;
+    cursor: pointer;
+
+    &.on {
+      background: $primary-color;
+      border-color: $primary-color;
+      color: #111;
+    }
+  }
+}
+
+.plugins-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.plugin-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+
+    small {
+      color: $text-color-secondary;
+      font-size: 0.75rem;
+    }
+  }
+
+  &__badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 4px;
+  }
+
+  &__desc {
+    margin: 0;
+    font-size: 0.85rem;
+    color: $text-color-primary;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.plugin-badge {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.1);
+  color: $text-color-primary;
+
+  &--viewer { background: rgba($secondary-color, 0.18); color: $secondary-color; }
+  &--channel { background: rgba($primary-color, 0.22); color: #d9bfff; }
+  &--locked { background: rgba($accent-secondary-color, 0.18); color: $accent-secondary-color; }
+}
+
+.plugin-settings {
+  display: grid;
+  gap: 8px;
+
+  &__row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+
+    small {
+      grid-column: 2;
+      color: $text-color-secondary;
+    }
+
+    input[type="color"] {
+      width: 44px;
+      height: 28px;
+      padding: 0;
+      border: 0;
+      background: none;
+    }
+  }
+
+  &__range {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    input { flex: 1; accent-color: $primary-color; }
+    output { min-width: 3ch; text-align: right; font-variant-numeric: tabular-nums; }
+  }
+}
+
+.plugin-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+}
+
+// Mirrors the sidebar: a background preview gets a sidebar-shaped stage
+// with fake menu items on top, so you can judge contrast
+.plugin-preview {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #000;
+
+  &--sidebar-background {
+    width: min(100%, $sidebar-width);
+    height: 320px;
+  }
+
+  &__stage {
+    position: absolute;
+    inset: 0;
+  }
+
+  &--sidebar-section &__stage {
+    position: relative;
+    padding: 8px;
+  }
+
+  &__mock {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 24px 16px;
+    pointer-events: none;
+
+    strong {
+      font-size: 1.2rem;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+    }
+
+    span {
+      width: 100%;
+      height: 44px;
+      border-radius: 5px;
+      background: rgba($background-color-primary, 0.86);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+.plugins-build {
+  &__editors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 10px;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: $text-color-secondary;
+
+      > span {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+      }
+
+      input[type="file"] {
+        font-size: 0.7rem;
+        max-width: 60%;
+      }
+    }
+
+    textarea {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.75rem;
+      line-height: 1.4;
+      resize: vertical;
+      min-height: 200px;
+    }
+  }
+
+  &__preview {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 14px;
+    align-items: start;
+
+    @media (max-width: 700px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+.plugins-cheatsheet {
+  font-size: 0.8rem;
+
+  summary { cursor: pointer; color: $text-color-secondary; }
+
+  pre {
+    margin: 8px 0 0;
+    padding: 10px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.4);
+    font-size: 0.75rem;
+    white-space: pre-wrap;
+  }
+}
+
+.plugins-muted {
+  margin: 0;
+  font-size: 0.85rem;
+  color: $text-color-secondary;
+}
+
+.plugins-ok {
+  margin: 0;
+  font-size: 0.85rem;
+  color: $secondary-color;
+}
+
+.plugins-error {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.85rem;
+  color: #ff9a9a;
+}

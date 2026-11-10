@@ -77,6 +77,9 @@ Rails.application.routes.draw do
       post ":slug/playout/tune", to: "playout#tune"
       get ":slug/playout/config", to: "playout#show_config"
 
+      get ":slug/plugins", to: "channel_plugins#show"
+      put ":slug/plugins", to: "channel_plugins#update"
+
       get ":slug", to: "channels#show"
 
       get ":channelId/tournament", to: "tournaments#show"
@@ -145,6 +148,17 @@ Rails.application.routes.draw do
       post ":id/review", action: :review, constraints: { id: DIGITS }
       post ":id/withdraw", action: :withdraw, constraints: { id: DIGITS }
     end
+
+    # Plugin system (Rails-era, no Express counterpart). See docs/plugins.md.
+    scope "/plugins", controller: "plugins" do
+      get "/", action: :index
+      get "bundle", action: :bundle
+      post "/", action: :create
+      patch ":id", action: :update, constraints: { id: DIGITS }
+      delete ":id", action: :destroy, constraints: { id: DIGITS }
+    end
+    get "plugin-prefs", to: "plugin_prefs#show"
+    put "plugin-prefs", to: "plugin_prefs#update"
 
     # tickerRoutes.ts
     scope "/ticker", controller: "ticker" do

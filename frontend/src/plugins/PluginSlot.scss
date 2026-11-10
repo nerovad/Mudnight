@@ -1,0 +1,53 @@
+// Bottom-most layer of the sidebar. It cannot go negative — the container's
+// own background is opaque and would swallow it — so 0 is "last", and every
+// content layer above sets an explicit positive z-index.
+.plugin-slot--sidebar-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none; // Clicks pass through to the menu
+
+  .plugin-slot__item {
+    position: absolute;
+    inset: 0;
+  }
+}
+
+.plugin-slot--sidebar-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.plugin-frame {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color-scheme: normal;
+
+  &--sidebar-background {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+
+    &.is-active {
+      opacity: 1;
+    }
+  }
+
+  &--sidebar-section {
+    height: 120px; // until the plugin calls mudnight.resize()
+    border-radius: 5px;
+    overflow: hidden;
+  }
+}
+
+.plugin-failure {
+  font-size: 0.8rem;
+  color: #ffb4b4;
+  padding: 0.5rem;
+}

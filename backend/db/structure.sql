@@ -11,6 +11,13 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- Name: public; Type: SCHEMA; Schema: -; Owner: -
+--
+
+-- *not* creating schema, since initdb creates it
+
+
+--
 -- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -354,6 +361,7 @@ CREATE TABLE public.channels (
     broadcast_day_start time without time zone DEFAULT '00:00:00'::time without time zone NOT NULL,
     playout_token text,
     schedule_rev timestamp with time zone DEFAULT now() NOT NULL,
+    plugins jsonb DEFAULT '[]'::jsonb NOT NULL,
     CONSTRAINT channels_contribution_policy_check CHECK ((contribution_policy = ANY (ARRAY['open'::text, 'invite'::text, 'closed'::text]))),
     CONSTRAINT channels_playout_mode_check CHECK ((playout_mode = ANY (ARRAY['live'::text, 'scheduled'::text])))
 );
@@ -679,6 +687,63 @@ ALTER SEQUENCE public.messages_id_seq OWNED BY public.messages.id;
 
 
 --
+-- Name: plugins; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.plugins (
+    id bigint NOT NULL,
+    plugin_key text NOT NULL,
+    author_id integer NOT NULL,
+    manifest jsonb NOT NULL,
+    code text NOT NULL,
+    visibility text DEFAULT 'unlisted'::text NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT plugins_visibility_check CHECK ((visibility = ANY (ARRAY['unlisted'::text, 'public'::text])))
+);
+
+
+--
+-- Name: plugins_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.plugins_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: plugins_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.plugins_id_seq OWNED BY public.plugins.id;
+
+
+--
+-- Name: rails_internal_metadata; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.rails_internal_metadata (
+    key character varying NOT NULL,
+    value character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: rails_schema_migrations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.rails_schema_migrations (
+    version character varying NOT NULL
+);
+
+
+--
 -- Name: ratings; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -857,6 +922,19 @@ CREATE SEQUENCE public.saved_channels_id_seq
 --
 
 ALTER SEQUENCE public.saved_channels_id_seq OWNED BY public.saved_channels.id;
+
+
+--
+-- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.schema_migrations (
+    filename text NOT NULL,
+    checksum text NOT NULL,
+    applied_at timestamp with time zone DEFAULT now() NOT NULL,
+    duration_ms integer,
+    baselined boolean DEFAULT false NOT NULL
+);
 
 
 --
@@ -1047,6 +1125,17 @@ CREATE SEQUENCE public.tournament_votes_id_seq
 --
 
 ALTER SEQUENCE public.tournament_votes_id_seq OWNED BY public.tournament_votes.id;
+
+
+--
+-- Name: user_plugin_prefs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.user_plugin_prefs (
+    user_id integer NOT NULL,
+    prefs jsonb DEFAULT '{}'::jsonb NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
+);
 
 
 --
@@ -1449,6 +1538,13 @@ ALTER TABLE ONLY public.messages ALTER COLUMN id SET DEFAULT nextval('public.mes
 
 
 --
+-- Name: plugins id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.plugins ALTER COLUMN id SET DEFAULT nextval('public.plugins_id_seq'::regclass);
+
+
+--
 -- Name: saved_channels id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1822,6 +1918,38 @@ ALTER TABLE ONLY public.messages
 
 
 --
+-- Name: plugins plugins_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.plugins
+    ADD CONSTRAINT plugins_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: plugins plugins_plugin_key_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.plugins
+    ADD CONSTRAINT plugins_plugin_key_key UNIQUE (plugin_key);
+
+
+--
+-- Name: rails_internal_metadata rails_internal_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.rails_internal_metadata
+    ADD CONSTRAINT rails_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: rails_schema_migrations rails_schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.rails_schema_migrations
+    ADD CONSTRAINT rails_schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
 -- Name: ratings ratings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1982,6 +2110,14 @@ ALTER TABLE ONLY public.saved_channels
 
 
 --
+-- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.schema_migrations
+    ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (filename);
+
+
+--
 -- Name: session_entries session_entries_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2067,6 +2203,14 @@ ALTER TABLE ONLY public.ballots
 
 ALTER TABLE ONLY public.sessions
     ADD CONSTRAINT uniq_channel_start UNIQUE (channel_id, starts_at);
+
+
+--
+-- Name: user_plugin_prefs user_plugin_prefs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_plugin_prefs
+    ADD CONSTRAINT user_plugin_prefs_pkey PRIMARY KEY (user_id);
 
 
 --
@@ -2516,6 +2660,13 @@ CREATE INDEX match_votes_p7_ballot_id_idx ON public.match_votes_p7 USING btree (
 --
 
 CREATE INDEX match_votes_p7_match_id_idx ON public.match_votes_p7 USING btree (match_id);
+
+
+--
+-- Name: plugins_author_id_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX plugins_author_id_idx ON public.plugins USING btree (author_id);
 
 
 --
@@ -3343,6 +3494,14 @@ ALTER TABLE ONLY public.messages
 
 
 --
+-- Name: plugins plugins_author_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.plugins
+    ADD CONSTRAINT plugins_author_id_fkey FOREIGN KEY (author_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
 -- Name: ratings ratings_ballot_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3431,6 +3590,14 @@ ALTER TABLE ONLY public.tournament_votes
 
 
 --
+-- Name: user_plugin_prefs user_plugin_prefs_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.user_plugin_prefs
+    ADD CONSTRAINT user_plugin_prefs_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
 -- Name: user_profile_awards user_profile_awards_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3475,4 +3642,7 @@ ALTER TABLE ONLY public.user_profiles
 --
 
 SET search_path TO "$user", public;
+
+INSERT INTO "rails_schema_migrations" (version) VALUES
+('20261109000000');
 

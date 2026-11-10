@@ -11,7 +11,8 @@
     "./stores": "./src/stores/index.ts",
     "./utils": "./src/utils/index.ts",
     "./storage": "./src/storage.ts",
-    "./realtime": "./src/realtime/index.ts"
+    "./realtime": "./src/realtime/index.ts",
+    "./plugins": "./src/plugins/index.ts"
   },
   "peerDependencies": {
     "zustand": ">=5.0.0"
